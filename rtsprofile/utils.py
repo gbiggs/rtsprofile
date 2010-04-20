@@ -111,7 +111,7 @@ def _check_type(value, expected_types):
         if type(et) == type and type(value) == et:
             return True
         elif type(et) == new.classobj and \
-                value.__class__.__name__ == et.__name__:
+                value.__class__ == et:
             return True
     return False
 
