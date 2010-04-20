@@ -290,7 +290,7 @@ class Preceding(Condition):
     '''
 
     def __init__(self, sequence=0, target_component=TargetExecutionContext(),
-                 timeout='', sending_timing='', preceding_components=[]):
+                 timeout=0, sending_timing='', preceding_components=[]):
         '''Constructor.
 
         @param sequence Execution order of the target component.
@@ -298,7 +298,7 @@ class Preceding(Condition):
         @param target_component The target of the condition.
         @type target_component TargetComponent
         @param timeout Status check timeout.
-        @type timeout str
+        @type timeout int
         @param sending_timing Timing for executing actions.
         @type sending_timing str
         @param preceding_components Preceding components of the condition.
@@ -307,7 +307,7 @@ class Preceding(Condition):
         '''
         super(Preceding, self).__init__(sequence, target_component)
         validate_attribute(timeout, 'preceding.timeout',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=int, required=False)
         self._timeout = timeout
         validate_attribute(sending_timing, 'preceding.sendingTiming',
                            expected_type=[str, unicode], required=False)
@@ -339,7 +339,7 @@ class Preceding(Condition):
     @timeout.setter
     def timeout(self, timeout):
         validate_attribute(timeout, 'preceding.timeout',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=int, required=False)
         self._timeout = timeout
 
     @property
@@ -378,7 +378,7 @@ class Preceding(Condition):
         '''
         super(Preceding, self).parse_xml_node(node)
         if node.hasAttributeNS(RTS_NS, 'timeout'):
-            self.timeout = node.getAttributeNS(RTS_NS, 'timeout')
+            self.timeout = int(node.getAttributeNS(RTS_NS, 'timeout'))
         else:
             self.timeout = ''
         if node.hasAttributeNS(RTS_NS, 'sendingTiming'):
