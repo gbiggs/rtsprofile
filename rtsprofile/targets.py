@@ -229,7 +229,7 @@ class TargetExecutionContext(TargetComponent):
 
     @property
     def id(self):
-        '''The ID of the target port.'''
+        '''The ID of the target execution context.'''
         return self._id
 
     @id.setter
