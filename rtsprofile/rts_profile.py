@@ -32,7 +32,9 @@ from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
 from rtsprofile.component import Component
 from rtsprofile.exceptions import MultipleSourcesError, \
                                   InvalidRtsProfileNodeError
-import rtsprofile.message_sending
+from rtsprofile.message_sending import StartUp, ShutDown, Activation, \
+                                       Deactivation, Resetting, Initialize, \
+                                       Finalize
 from rtsprofile.port_connectors import DataPortConnector, ServicePortConnector
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
@@ -278,8 +280,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @startup.setter
     def startup(self, startup):
         validate_attribute(startup, 'rts_profile.StartUp',
-                           expected_type=message_sending.StartUp,
-                           required=False)
+                           expected_type=StartUp, required=False)
         self._startup = startup
 
     @property
@@ -290,8 +291,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @shutdown.setter
     def shutdown(self, shutdown):
         validate_attribute(shutdown, 'rts_profile.ShutDown',
-                           expected_type=message_sending.ShutDown,
-                           required=False)
+                           expected_type=ShutDown, required=False)
         self._shutdown = shutdown
 
     @property
@@ -302,8 +302,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @activation.setter
     def activation(self, activation):
         validate_attribute(activation, 'rts_profile.Activation',
-                           expected_type=message_sending.Activation,
-                           required=False)
+                           expected_type=Activation, required=False)
         self._activation = activation
 
     @property
@@ -314,8 +313,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @deactivation.setter
     def deactivation(self, deactivation):
         validate_attribute(deactivation, 'rts_profile.Deactivation',
-                           expected_type=message_sending.Deactivation,
-                           required=False)
+                           expected_type=Deactivation, required=False)
         self._deactivation = deactivation
 
     @property
@@ -326,8 +324,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @resetting.setter
     def resetting(self, resetting):
         validate_attribute(resetting, 'rts_profile.Resetting',
-                           expected_type=message_sending.Resetting,
-                           required=False)
+                           expected_type=Resetting, required=False)
         self._resetting = resetting
 
     @property
@@ -338,8 +335,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @initializing.setter
     def initializing(self, initializing):
         validate_attribute(initializing, 'rts_profile.Initializing',
-                           expected_type=message_sending.Initialize,
-                           required=False)
+                           expected_type=Initialize, required=False)
         self._initializing = initializing
 
     @property
@@ -350,8 +346,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @finalizing.setter
     def finalizing(self, finalizing):
         validate_attribute(finalizing, 'rts_profile.Finalizing',
-                           expected_type=message_sending.Finalize,
-                           required=False)
+                           expected_type=Finalize, required=False)
         self._finalizing = finalizing
 
     @property

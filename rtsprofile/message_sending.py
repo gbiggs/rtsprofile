@@ -26,7 +26,7 @@ __version__ = '$Revision: $'
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
 from rtsprofile.targets import TargetExecutionContext
 from rtsprofile.utils import get_direct_child_elements_xml, \
-                             validate_attribute
+                             indent_string, validate_attribute
 
 
 ##############################################################################
@@ -49,7 +49,7 @@ class MessageSending(object):
         if self.targets:
             result += 'Targets:\n'
             for t in self.targets:
-                result += '  {0}\n'.format(t)
+                result += '{0}\n'.format(indent_string(str(t)))
         return result[:-1] # Lop off the last new line
 
     @property
@@ -69,32 +69,25 @@ class MessageSending(object):
 
         '''
         self._targets = []
-        for c in node.getElementsByTagNameNS(RTS_NS, 'wait_time'):
-            self._targets.append(WaitTime(c))
-        for c in node.getElementsByTagNameNS(RTS_NS, 'preceding'):
-            self._targets.append(Preceding(c))
-        for c in node.getElementsByTagNameNS(RTS_NS, 'condition'):
-            self._targets.append(Condition(c))
+        for c in node.getElementsByTagNameNS(RTS_NS, 'Targets'):
+            if c.getAttributeNS(RTS_NS, 'waitTime'):
+                new_target = WaitTime()
+            elif c.getAttributeNS(RTS_NS, 'timeout') or \
+                    c.getAttributeNS(RTS_NS, 'sendingTiming') or \
+                    c.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
+                new_target = Preceding()
+            else:
+                new_target = Condition()
+            new_target.parse_xml_node(c)
+            self._targets.append(new_target)
         return self
 
     def save_xml(self, doc, element):
         '''Save this message_sending object into an xml.dom.Element object.'''
         for cond in self._targets:
-            if cond.__class__.__name__ == 'WaitTime':
-                new_element = doc.createElementNS(RTS_NS,
-                                                  RTS_NS_S + 'wait_time')
-                cond.save_xml(doc, new_element)
-                element.appendChild(new_element)
-            elif cond.__class__.__name__ == 'Preceding':
-                new_element = doc.createElementNS(RTS_NS,
-                                                  RTS_NS_S + 'preceding')
-                cond.save_xml(doc, new_element)
-                element.appendChild(new_element)
-            elif cond.__class__.__name__ == 'Condition':
-                new_element = doc.createElementNS(RTS_NS,
-                                                  RTS_NS_S + 'condition')
-                cond.save_xml(doc, new_element)
-                element.appendChild(new_element)
+            new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Targets')
+            cond.save_xml(doc, new_element)
+            element.appendChild(new_element)
 
 
 ##############################################################################
@@ -205,8 +198,8 @@ class Condition(object):
         self._properties = {}
 
     def __str__(self):
-        result = 'Sequence: {0}\nTargetEC: {1}\n'.format(self.sequence,
-                                                         self.target_component)
+        result = 'Sequence: {0}\nTargetEC:\n{1}\n'.format(self.sequence,
+                indent_string(str(self.target_component)))
         if self.properties:
             result += 'Properties:\n'
             for p in self.properties:
@@ -319,13 +312,19 @@ class Preceding(Condition):
         validate_attribute(sending_timing, 'preceding.sendingTiming',
                            expected_type=[str, unicode], required=False)
         self._sending_timing = sending_timing
-        validate_attribute(sending_timing, 'preceding.PrecedingComponents',
+        validate_attribute(preceding_components,
+                           'preceding.PrecedingComponents',
                            expected_type=list, required=False)
         self._preceding_components = preceding_components
 
     def __str__(self):
-        return 'Timeout: {0}\nSending timing: {1}\n{2}'.format(self.timeout,
+        result = 'Timeout: {0}\nSending timing: {1}\n{2}'.format(self.timeout,
                 self.sending_timing, Condition.__str__(self))
+        if self.preceding_components:
+            for pc in self.preceding_components:
+                result += '\nPreceding component:\n{0}'.format(\
+                        indent_string(str(pc)))
+        return result
 
     @property
     def timeout(self):
