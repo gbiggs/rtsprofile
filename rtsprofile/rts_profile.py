@@ -27,6 +27,7 @@ __version__ = '$Revision: $'
 from datetime import datetime, MINYEAR
 import xml.dom
 import xml.dom.minidom
+import yaml
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
 from rtsprofile.component import Component
@@ -527,6 +528,32 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
             dest_file.close()
 
     ###########################################################################
+    # YAML
+
+    def parse_from_yaml(self, yaml_spec):
+        '''Parse a string or file containing a YAML specification.'''
+        self._parse_yaml(yaml.safe_load(yaml_spec_string))
+
+    def save_to_yaml_string(self):
+        '''Save this RtsProfile into a YAML-formatted string.'''
+        return self._to_yaml()
+
+    def save_to_yaml_file(self):
+        '''Save this RtsProfile into a YAML-formatted file.
+
+        @param dest Either the name of the YAML file to write to, or a file
+        object to write to.
+
+        '''
+        if type(dest) == str:
+            dest_file = open(dest, 'w')
+        else:
+            dest_file = dest
+        dest_file.write(self.save_to_yaml_string())
+        if type(dest) == str:
+            dest_file.close()
+
+    ###########################################################################
     # Internal functions
 
     def _parse_xml(self, dom):
@@ -595,6 +622,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
             name, value = parse_properties_xml(c)
             self._properties[name] = value
 
+    def _parse_yaml(self, dom):
 
     def _reset(self):
         # Clears all values in the class in preparation for parsing an
@@ -703,6 +731,9 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
             properties_to_xml(new_prop_element, p, self.properties[p])
             doc.documentElement.appendChild(new_prop_element)
         return doc
+
+    def _to_yaml(self):
+        return yaml.dump(self)
 
 
 # vim: tw=79
