@@ -23,7 +23,8 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile.participant import Participant
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
@@ -155,19 +156,43 @@ class ExecutionContext(object):
         this object.
 
         '''
-        self._participants = []
         self.id = node.getAttributeNS(RTS_NS, 'id')
         self.kind = node.getAttributeNS(RTS_NS, 'kind')
         if node.hasAttributeNS(RTS_NS, 'rate'):
             self.rate = float(node.getAttributeNS(RTS_NS, 'rate'))
         else:
             self.rate = 0.0
+        self._participants = []
         for c in node.getElementsByTagNameNS(RTS_NS, 'Participants'):
-            self._participants.append(Participant().parse_xml_node(c))
+            self._participants.append(TargetComponent().parse_xml_node(c))
         for c in get_direct_child_elements_xml(node, prefix=RTS_EXT_NS,
                                                local_name='Properties'):
             name, value = parse_properties_xml(c)
             self._properties[name] = value
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML spefication of an execution context into this
+        object.
+
+        '''
+        self.id = y['id']
+        self.kind = y['kind']
+        if 'rate' in y:
+            self.rate = float(y['rate'])
+        else:
+            self.rate = 0.0
+        self._participants = []
+        if 'participants' in y:
+            for p in y.get('participants'):
+                self._participants.append(TargetComponent().parse_yaml(p))
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y.get(RTS_EXT_NS_YAML + 'properties'):
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
         return self
 
     def save_xml(self, doc, element):
@@ -185,6 +210,27 @@ class ExecutionContext(object):
                                                    RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this execution context into a dictionary.'''
+        d = {'id': self.id,
+                'kind': self.kind}
+        if self.rate != 0.0:
+            d['rate'] = self.rate
+        participants = []
+        for p in self.participants:
+            participants.append(p.to_dict())
+        if participants:
+            d['participants'] = participants
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+        return d
 
 
 # vim: tw=79

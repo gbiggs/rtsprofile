@@ -25,6 +25,7 @@ __version__ = '$Revision: $'
 
 import new
 import re
+import time
 
 from rtsprofile import RTS_EXT_NS, RTS_EXT_NS_S
 from rtsprofile.exceptions import InvalidTypeError, RequiredAttributeError
@@ -32,6 +33,11 @@ from rtsprofile.exceptions import InvalidTypeError, RequiredAttributeError
 
 ###############################################################################
 ## Public API functions
+
+def date_to_dict(date):
+    t = time.strptime(date, '%Y-%m-%dT%H:%M:%S')
+    return {'year': t.tm_year, 'month': t.tm_mon, 'day': t.tm_mday, 'hour':
+            t.tm_hour, 'minute': t.tm_min, 'second': t.tm_sec}
 
 def get_direct_child_elements_xml(node, prefix=None, local_name=None):
     for c in node.childNodes:

@@ -24,7 +24,8 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              parse_properties_xml, properties_to_xml, \
                              validate_attribute
@@ -128,6 +129,22 @@ class TargetComponent(object):
             self._properties[name] = value
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a target component into this
+        object.
+
+        '''
+        self.component_id = y['componentId']
+        self.instance_name = y['instanceName']
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y.get(RTS_EXT_NS_YAML + 'properties'):
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
+        return self
+
     def save_xml(self, doc, element):
         '''Save this target component into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'componentId',
@@ -139,6 +156,20 @@ class TargetComponent(object):
                                                    RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this target component into a dictionary.'''
+        d = {'componentId': self.component_id,
+                'instanceName': self.instance_name}
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+        return d
 
 
 ##############################################################################
@@ -186,10 +217,22 @@ class TargetPort(TargetComponent):
         self.port_name = node.getAttributeNS(RTS_NS, 'portName')
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a target port into this object.'''
+        super(TargetPort, self).parse_yaml(y)
+        self.port_name = y['portName']
+        return self
+
     def save_xml(self, doc, element):
-        '''Save this  into an xml.dom.Element object.'''
+        '''Save this target port into an xml.dom.Element object.'''
         super(TargetPort, self).save_xml(doc, element)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'portName', self.port_name)
+
+    def to_dict(self):
+        '''Save this target port into a dictionary.'''
+        d = super(TargetPort, self).to_dict()
+        d['portName'] = self.port_name
+        return d
 
 
 ##############################################################################
@@ -266,20 +309,33 @@ class TargetExecutionContext(TargetComponent):
             self.id = node.getAttributeNS(RTS_NS, 'id')
         else:
             self.id = ''
-        for c in node.getElementsByTagNameNS(RTS_EXT_NS, 'Properties'):
-            name, value = parse_properties_xml(c)
-            self._properties[name] = value
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a target execution context into this
+        object.
+
+        '''
+        super(TargetExecutionContext, self).parse_yaml(y)
+        if 'id' in y:
+            self.id = y['id']
+        else:
+            self.id = ''
         return self
 
     def save_xml(self, doc, element):
-        '''Save this  into an xml.dom.Element object.'''
+        '''Save this target execution context into an xml.dom.Element
+        object.
+
+        '''
         super(TargetExecutionContext, self).save_xml(doc, element)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
-        for p in self.properties:
-            new_prop_element = doc.createElementNS(RTS_EXT_NS,
-                                                   RTS_EXT_NS_S + 'Properties')
-            properties_to_xml(new_prop_element, p, self.properties[p])
-            element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this target execution context into a dictionary.'''
+        d = super(TargetExecutionContext, self).to_dict()
+        d['id'] = self.id
+        return d
 
 
 # vim: tw=79

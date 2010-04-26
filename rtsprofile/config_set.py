@@ -98,8 +98,20 @@ class ConfigurationSet(object):
         '''
         self.id = node.getAttributeNS(RTS_NS, 'id')
         self._config_data = []
-        for c in node.getElementsByTagNameNS(RTS_NS, 'ConfigurationData'):
-            self._config_data.append(ConfigurationData().parse_xml_node(c))
+        for d in node.getElementsByTagNameNS(RTS_NS, 'ConfigurationData'):
+            self._config_data.append(ConfigurationData().parse_xml_node(d))
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a configuration set into this
+        object.
+
+        '''
+        self.id = y['id']
+        self._config_data = []
+        if 'configurationData' in y:
+            for d in y.get('configurationData'):
+                self._config_data.append(ConfigurationData().parse_yaml(d))
         return self
 
     def save_xml(self, doc, element):
@@ -110,6 +122,16 @@ class ConfigurationSet(object):
                                               RTS_NS_S + 'ConfigurationData')
             c.save_xml(doc, new_element)
             element.appendChild(new_element)
+
+    def to_dict(self):
+        '''Save this configuration set into a dictionary.'''
+        d = {'id': self.id}
+        data = []
+        for c in self._config_data:
+            data.append(c.to_dict())
+        if data:
+            d['configurationData'] = data
+        return d
 
 
 ##############################################################################
@@ -179,11 +201,30 @@ class ConfigurationData(object):
             self.data = ''
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a configuration data into this
+        object.
+
+        '''
+        self.name = y['name']
+        if 'data' in y:
+            self.data = y['data']
+        else:
+            self.data = ''
+        return self
+
     def save_xml(self, doc, element):
         '''Save this configuration data into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
         if self.data:
             element.setAttributeNS(RTS_NS, RTS_NS_S + 'data', self.data)
+
+    def to_dict(self):
+        '''Save this configuration data into a dictionary.'''
+        d = {'name': self.name}
+        if self.data:
+            d['data'] = self.data
+        return d
 
 
 # vim: tw=79

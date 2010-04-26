@@ -148,8 +148,17 @@ class Location(object):
                 'direction'))
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a location into this object.'''
+        self.x = int(y['x'])
+        self.y = int(y['y'])
+        self.height = int(y['height'])
+        self.width = int(y['width'])
+        self.direction = dir.from_string(y['direction'])
+        return self
+
     def save_xml(self, doc, element):
-        '''Save this property into an xml.dom.Element object.'''
+        '''Save this location into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'x', str(self.x))
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'y', str(self.y))
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'height',
@@ -158,6 +167,14 @@ class Location(object):
                                str(self.width))
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'direction',
                                dir.to_string(self.direction))
+
+    def to_dict(self):
+        '''Save this location into a dictionary.'''
+        return {'x': self.x,
+                'y': self.y,
+                'height': self.height,
+                'width': self.width,
+                'direction': dir.to_string(self.direction)}
 
 
 # vim: tw=79

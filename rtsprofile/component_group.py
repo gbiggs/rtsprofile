@@ -94,6 +94,18 @@ class ComponentGroup(object):
             self._members.append(TargetComponent().parse_xml_node(c))
         return self
 
+    def parse_yaml(self, node):
+        '''Parse a YAML specification of a component group into this
+        object.
+
+        '''
+        self.group_id = y['groupId']
+        self._members = []
+        if 'members' in y:
+            for m in y.get('members'):
+                self._members.append(TargetComponent().parse_yaml(m))
+        return self
+
     def save_xml(self, doc, element):
         '''Save this component group into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'groupID', self.group_id)
@@ -101,6 +113,17 @@ class ComponentGroup(object):
             new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Members')
             m.save_xml(doc, new_element)
             element.appendChild(new_element)
+
+    def to_dict(self):
+        '''Save this component group to a dictionary.'''
+        d = {'groupId': self.group_id}
+        members = []
+        for m in self.members:
+            members.append(m.to_dict())
+        if members:
+            d['members'] = members
+        return d
+
 
 
 # vim: tw=79

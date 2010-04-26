@@ -29,15 +29,17 @@ import xml.dom
 import xml.dom.minidom
 import yaml
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile.component import Component
+from rtsprofile.component_group import ComponentGroup
 from rtsprofile.exceptions import MultipleSourcesError, \
-                                  InvalidRtsProfileNodeError
+                                  InvalidRtsProfileNodeError, RtsProfileError
 from rtsprofile.message_sending import StartUp, ShutDown, Activation, \
                                        Deactivation, Resetting, Initialize, \
                                        Finalize
 from rtsprofile.port_connectors import DataPortConnector, ServicePortConnector
-from rtsprofile.utils import get_direct_child_elements_xml, \
+from rtsprofile.utils import date_to_dict, get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
                              properties_to_xml, validate_attribute
 
@@ -46,8 +48,7 @@ from rtsprofile.utils import get_direct_child_elements_xml, \
 ## RtsProfile object
 
 class RtsProfile:
-    def __init__(self, xml_spec_string=None, xml_spec_file=None,
-                 yaml_spec_string=None, yaml_spec_file=None):
+    def __init__(self, xml_spec=None, yaml_spec=None):
         '''Constructor.
 
         Pass in an RTSProfile specification either in a string or a file
@@ -56,33 +57,25 @@ class RtsProfile:
         If no specification is provided, the RtsProfile will be constructed
         from the default values. Use the properties to set the values you need.
 
-        @param xml_spec_string A string containing the XML specification
-        of the RTS Profile. If present, the other arguments must be None.
+        @param xml_spec A string or open file object containing the XML
+        specification of the RTS Profile. If present, the other arguments must
+        be None.
 
-        @param xml_spec_file An object implementing the Python file interface
-        that contains the XML specification of the RTS Profile, or a string
-        containing the path to the XML file. If present, the other arguments
-        must be None.
-
-        @param yaml_spec_string A string containing the YAML specification of
-        the RTS Profile. If present, the other arguments must be None.
-
-        @param yaml_spec_file An object implementing the Python file interface
-        that contains the YAML specification of the RTS profile, or a string
-        containing the path to the YAML file. If present, the other arguments
-        must be None.
+        @param yaml_spec A string or open file object containing the YAML
+        specification of the RTS Profile. If present, the other arguments must
+        be None.
 
         '''
-        if xml_spec_string:
-            if xml_spec_file or yaml_spec_string or yaml_spec_file:
-                raise MultipleSourcesError('Specification string and \
-specification file both present.')
-            self.parse_from_xml_string(xml_spec_string)
-        elif xml_spec_file:
-            if xml_spec_string or yaml_spec_string or yaml_spec_file:
-                raise MultipleSourcesError('Specification string and \
-specification file both present.')
-            self.parse_from_xml_file(xml_spec_file)
+        if xml_spec:
+            if yaml_spec:
+                raise MultipleSourcesError('XML and YAML specifications both \
+given.')
+            self.parse_from_xml(xml_spec)
+        elif yaml_spec:
+            if xml_spec:
+                raise MultipleSourcesError('XML and YAML specifications both \
+given.')
+            self.parse_from_yaml(yaml_spec)
         else:
             self._reset()
 
@@ -143,7 +136,6 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         Typically in the format '[vendor name].[system name].[version]'.
 
         '''
-        print 'getting id'
         return self._id
 
     @id.setter
@@ -490,68 +482,30 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     ###########################################################################
     # XML
 
-    def parse_from_xml_string(self, xml_spec_string):
-        '''Parse a string containing an XML specification.'''
-        dom = xml.dom.minidom.parseString(xml_spec_string)
+    def parse_from_xml(self, xml_spec):
+        '''Parse a string or file containing an XML specification.'''
+        if type(xml_spec) == str:
+            dom = xml.dom.minidom.parseString(xml_spec)
+        else:
+            dom = xml.dom.minidom.parse(xml_spec)
         self._parse_xml(dom)
         dom.unlink()
 
-    def parse_from_xml_file(self, xml_spec_file):
-        '''Parse a file containing an XML specification.
-
-        @param xml_spec_file Either the name of the XML file to open, or a file
-        object.
-
-        '''
-        dom = xml.dom.minidom.parse(xml_spec_file)
-        self._parse_xml(dom)
-        dom.unlink()
-
-    def save_to_xml_string(self):
+    def save_to_xml(self):
         '''Save this RtsProfile into an XML-formatted string.'''
         xml_obj = self._to_xml_dom()
         return xml_obj.toprettyxml(indent='    ')
-
-    def save_to_xml_file(self, dest):
-        '''Save this RtsProfile into an XML-formatted file.
-
-        @param dest Either the name of the XML file to write to, or a file
-        object to write to.
-
-        '''
-        if type(dest) == str:
-            dest_file = open(dest, 'w')
-        else:
-            dest_file = dest
-        dest_file.write(self.save_to_xml_string())
-        if type(dest) == str:
-            dest_file.close()
 
     ###########################################################################
     # YAML
 
     def parse_from_yaml(self, yaml_spec):
         '''Parse a string or file containing a YAML specification.'''
-        self._parse_yaml(yaml.safe_load(yaml_spec_string))
+        self._parse_yaml(yaml.safe_load(yaml_spec))
 
-    def save_to_yaml_string(self):
+    def save_to_yaml(self):
         '''Save this RtsProfile into a YAML-formatted string.'''
         return self._to_yaml()
-
-    def save_to_yaml_file(self):
-        '''Save this RtsProfile into a YAML-formatted file.
-
-        @param dest Either the name of the YAML file to write to, or a file
-        object to write to.
-
-        '''
-        if type(dest) == str:
-            dest_file = open(dest, 'w')
-        else:
-            dest_file = dest
-        dest_file.write(self.save_to_yaml_string())
-        if type(dest) == str:
-            dest_file.close()
 
     ###########################################################################
     # Internal functions
@@ -570,12 +524,12 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         for c in root.getElementsByTagNameNS(RTS_NS, 'Components'):
             self._components.append(Component().parse_xml_node(c))
         for c in root.getElementsByTagNameNS(RTS_NS, 'Groups'):
-            self._groups.append(Group().parse_xml_node(c))
+            self._groups.append(ComponentGroup().parse_xml_node(c))
         for c in root.getElementsByTagNameNS(RTS_NS, 'DataPortConnectors'):
             self._data_port_connectors.append(DataPortConnector().parse_xml_node(c))
         for c in root.getElementsByTagNameNS(RTS_NS, 'ServicePortConnectors'):
             self._service_port_connectors.append(ServicePortConnector().parse_xml_node(c))
-        # These children should have one or none
+        # These children should have zero or one
         c = root.getElementsByTagNameNS(RTS_NS, 'StartUp')
         if c.length > 0:
             if c.length > 1:
@@ -622,7 +576,61 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
             name, value = parse_properties_xml(c)
             self._properties[name] = value
 
-    def _parse_yaml(self, dom):
+    def _parse_yaml(self, spec):
+        self._reset()
+        if not 'rtsProfile' in spec:
+            raise RtsProfileError('Missing root node.')
+        root = spec['rtsProfile']
+        # Get the attributes
+        self.id = root['id']
+        if 'abstract' in root:
+            self.abstract = root['abstract']
+        self.creation_date = '{year}-{month}-{day}T{hour}:{minute}:\
+{second}'.format(**root['creationDate'])
+        self.update_date = '{year}-{month}-{day}T{hour}:{minute}:\
+{second}'.format(**root['updateDate'])
+        self.version = root['version']
+        if RTS_EXT_NS_YAML + 'comment' in root:
+            self.comment = root[RTS_EXT_NS_YAML + 'comment']
+        # Parse the children
+        if 'components' in root:
+            for c in root['components']:
+                self._components.append(Component().parse_yaml(c))
+        if 'groups' in root:
+            for c in root['groups']:
+                self._groups.append(ComponentGroup().parse_yaml(c))
+        if 'dataPortConnectors' in root:
+            for c in root['dataPortConnectors']:
+                self._data_port_connectors.append(DataPortConnector().parse_yaml(c))
+        if 'servicePortConnectors' in root:
+            for c in root['servicePortConnectors']:
+                self._service_port_connectors.append(ServicePortConnector().parse_yaml(c))
+        # Singular children
+        if 'startUp' in root:
+            self._startup = StartUp().parse_yaml(root['startUp'])
+        if 'shutDown' in root:
+            self._shutdown = ShutDown().parse_yaml(root['shutDown'])
+        if 'activation' in root:
+            self._activation = Activation().parse_yaml(root['activation'])
+        if 'deactivation' in root:
+            self._deactivation = Deactivation().parse_yaml(root['deactivation'])
+        if 'resetting' in root:
+            self._resetting = Resetting().parse_yaml(root['resetting'])
+        if 'initializing' in root:
+            self._initializing = Initializing().parse_yaml(root['initializing'])
+        if 'finalizing' in root:
+            self._finalizing = Finalizing().parse_yaml(root['finalizing'])
+        # Extended profile children
+        if RTS_EXT_NS_YAML + 'versionUpLogs' in root:
+            for c in root[RTS_EXT_NS_YAML + 'versionUpLogs']:
+                self._version_up_log.append(c)
+        if RTS_EXT_NS_YAML + 'properties' in root:
+            for p in root[RTS_EXT_NS_YAML + 'properties']:
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
 
     def _reset(self):
         # Clears all values in the class in preparation for parsing an
@@ -650,6 +658,71 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         self._version_up_log = ''
         self._properties = {}
 
+    def _to_dict(self):
+        # This converts an RTSProfile object into a dictionary. The typical use
+        # for this is to then dump that dictionary as YAML.
+        # We need to do this because the RtsProfile object hierarchy does not
+        # correspond directly to the YAML object hierarchy.
+        prof = {'id': self.id,
+                'abstract': self.abstract,
+                'creationDate': date_to_dict(self.creation_date),
+                'updateDate': date_to_dict(self.update_date),
+                'version': self.version}
+        if self.comment:
+            prof[RTS_EXT_NS_YAML + 'comment'] = self.comment
+
+        components = []
+        for c in self._components:
+            components.append(c.to_dict())
+        if components:
+            prof['components'] = components
+        groups = []
+        for g in self._groups:
+            groups.append(g.to_dict())
+        if groups:
+            prof['groups'] = groups
+        d_connectors = []
+        for c in self._data_port_connectors:
+            d_connectors.append(c.to_dict())
+        if d_connectors:
+            prof['dataPortConnectors'] = d_connectors
+        s_connectors = []
+        for c in self._service_port_connectors:
+            s_connectors.append(c.to_dict())
+        if s_connectors:
+            prof['servicePortConnectors'] = s_connectors
+
+        if self.startup:
+            prof['startUp'] = self.startup.to_dict()
+        if self.shutdown:
+            prof['shutDown'] = self.shutdown.to_dict()
+        if self.activation:
+            prof['activation'] = self.activation.to_dict()
+        if self.deactivation:
+            prof['deactivation'] = self.deactivation.to_dict()
+        if self.resetting:
+            prof['resetting'] = self.resetting.to_dict()
+        if self.initializing:
+            prof['initializing'] = self.initializing.to_dict()
+        if self.finalizing:
+            prof['finalizing'] = self.finalizing.to_dict()
+
+        log = []
+        for l in self.version_up_log:
+            log.append(l)
+        if log:
+            prof[RTS_EXT_NS_YAML + 'versionUpLogs'] = log
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            prof[RTS_EXT_NS_YAML + 'properties'] = props
+
+        return {'rtsProfile': prof}
+
     def _to_xml_dom(self):
         impl = xml.dom.minidom.getDOMImplementation()
         doc = impl.createDocument(RTS_NS, RTS_NS_S + 'RtsProfile', None)
@@ -666,7 +739,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'updateDate',
                                            self.update_date)
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'version',
-                                           self.version)
+                                           str(self.version))
         if self.comment:
             doc.documentElement.setAttributeNS(RTS_EXT_NS,
                                                RTS_EXT_NS_S + 'comment',
@@ -733,7 +806,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         return doc
 
     def _to_yaml(self):
-        return yaml.dump(self)
+        return yaml.safe_dump(self._to_dict())
 
 
 # vim: tw=79

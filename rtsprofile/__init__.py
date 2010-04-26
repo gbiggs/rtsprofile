@@ -30,6 +30,7 @@ RTS_NS = 'http://www.openrtp.org/namespaces/rts'
 RTS_NS_S = 'rts:'
 RTS_EXT_NS = 'http://www.openrtp.org/namespaces/rts_ext'
 RTS_EXT_NS_S = 'rtsExt:'
+RTS_EXT_NS_YAML = 'rtsExt::'
 
 
 # vim: tw=79

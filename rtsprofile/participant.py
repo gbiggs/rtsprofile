@@ -73,11 +73,22 @@ class Participant(object):
                 node.getElementsByTagNameNS(RTS_NS, 'Participant')[0])
         return self
 
+    def parse_yaml_node(self, y):
+        '''Parse a YAML specification of a participant into this object.'''
+        if 'participant' not in y:
+            raise InvalidParticipantNodeError
+        self.target_component = TargetComponent().parse_yaml_node(y['participant'])
+        return self
+
     def save_xml(self, doc, element):
         '''Save this participant into an xml.dom.Element object.'''
         new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Participant')
         self.target_component.save_xml(doc, new_element)
         element.appendChild(new_element)
+
+    def to_dict(self):
+        '''Save this participant into a dictionary.'''
+        return {'participant': self.target_component.to_dict()}
 
 
 # vim: tw=79

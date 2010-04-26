@@ -22,7 +22,8 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile.exceptions import InvalidDataPortConnectorNodeError, \
                                   InvalidServicePortConnectorNodeError
 from rtsprofile.targets import TargetPort
@@ -339,6 +340,50 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
             self._properties[name] = value
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a data port connector into this
+        object.
+
+        '''
+        self.connector_id = y['connectorId']
+        self.name = y['name']
+        self.data_type = y['dataType']
+        self.interface_type = y['interfaceType']
+        self.data_flow_type = y['dataflowType']
+        if 'subscriptionType' in y:
+            self.subscription_type = y['subscriptionType']
+        else:
+            self.subscription_type = ''
+        if 'pushInterval' in y:
+            self.push_interval = float(y['pushInterval'])
+        else:
+            self.push_interval = 0.0
+        if RTS_EXT_NS_YAML + 'comment' in y:
+            self.comment = y[RTS_EXT_NS_YAML + 'comment']
+        else:
+            self.comment = ''
+        self.visible = False
+        if RTS_EXT_NS_YAML + 'visible' in y:
+            visible = y[RTS_EXT_NS_YAML + 'visible']
+            if visible == 'true' or visible == '1':
+                self.visible = True
+        if not 'sourceDataPort' in y:
+            raise InvalidDataPortConnectorNodeError
+        self.source_data_port = \
+                TargetPort().parse_yaml(y['sourceDataPort'])
+        if not 'targetDataPort' in y:
+            raise InvalidDataPortConnectorNodeError
+        self.target_data_port = \
+                TargetPort().parse_yaml(y['targetDataPort'])
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y[RTS_EXT_NS_YAML + 'properties']:
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
+        return self
+
     def save_xml(self, doc, element):
         '''Save this data port into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'connectorId',
@@ -370,6 +415,32 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
                                                    RTS_EXT_NS + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this data port connector into a dictionary.'''
+        d = {'connectorId': self.connector_id,
+                'name': self.name,
+                'dataType': self.data_type,
+                'interfaceType': self.interface_type,
+                'dataflowType': self.data_flow_type,
+                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
+                'sourceDataPort': self.source_data_port.to_dict(),
+                'targetDataPort': self.target_data_port.to_dict()}
+        if self.subscription_type:
+            d['subscriptionType'] = self.subscription_type
+        if self.push_interval:
+            d['pushInterval'] = self.push_interval
+        if self.comment:
+            d[RTS_EXT_NS_YAML + 'comment'] = self.comment
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+        return d
 
 
 ##############################################################################
@@ -576,17 +647,54 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
                 self.visible = False
 
         if node.getElementsByTagNameNS(RTS_NS, 'sourceServicePort').length != 1:
-            raise InvalidDataPortConnectorNodeError
+            raise InvalidServicePortConnectorNodeError
         self.source_service_port = TargetPort().parse_xml_node(\
                 node.getElementsByTagNameNS(RTS_NS, 'sourceServicePort')[0])
         if node.getElementsByTagNameNS(RTS_NS, 'targetServicePort').length != 1:
-            raise InvalidDataPortConnectorNodeError
+            raise InvalidServicePortConnectorNodeError
         self.target_service_port = TargetPort().parse_xml_node(\
                 node.getElementsByTagNameNS(RTS_NS, 'targetServicePort')[0])
         for c in get_direct_child_elements_xml(node, prefix=RTS_EXT_NS,
                                                local_name='Properties'):
             name, value = parse_properties_xml(c)
             self._properties[name] = value
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a service port connector into this
+        object.
+
+        '''
+        self.connector_id = y['connectorId']
+        self.name = y['name']
+        if 'transMethod' in y:
+            self.trans_method = y['transMethod']
+        else:
+            self.trans_method = ''
+        if RTS_EXT_NS_YAML + 'comment' in y:
+            self.comment = y[RTS_EXT_NS_YAML + 'comment']
+        else:
+            self.comment = ''
+        self.visible = False
+        if RTS_EXT_NS_YAML + 'visible' in y:
+            visible = y[RTS_EXT_NS_YAML + 'visible']
+            if visible == 'true' or visible == '1':
+                self.visible = True
+        if 'sourceServicePort' not in y:
+            raise InvalidServicePortConnectorNodeError
+        self.source_service_port = \
+                TargetPort().parse_yaml(y['sourceServicePort'])
+        if 'targetServicePort' not in y:
+            raise InvalidServicePortConnectorNodeError
+        self.target_service_port = \
+                TargetPort().parse_yaml(y['targetServicePort'])
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y[RTS_EXT_NS_YAML + 'properties']:
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
         return self
 
     def save_xml(self, doc, element):
@@ -615,6 +723,27 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
                                                    RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this service port connector into a dictionary.'''
+        d = {'connectorId': self.connector_id,
+                'name': self.name,
+                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
+                'sourceServicePort': self.source_service_port.to_dict(),
+                'targetServicePort': self.target_service_port.to_dict()}
+        if self.trans_method:
+            d['transMethod'] = self.trans_method
+        if self.comment:
+            d[RTS_EXT_NS_YAML + 'comment'] = self.comment
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+        return d
 
 
 # vim: tw=79

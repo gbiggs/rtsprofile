@@ -23,7 +23,8 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile.targets import TargetExecutionContext
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, validate_attribute
@@ -82,12 +83,39 @@ class MessageSending(object):
             self._targets.append(new_target)
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML speficication of a message sending object into this
+        object.
+
+        '''
+        self._targets = []
+        for t in y['targets']:
+            if 'waitTime' in t['condition']:
+                new_target = WaitTime()
+            elif 'preceding' in t['condition']:
+                new_target = Preceding()
+            else:
+                new_target = Condition()
+            new_target.parse_yaml(t)
+            self._targets.append(new_target)
+        return self
+
     def save_xml(self, doc, element):
         '''Save this message_sending object into an xml.dom.Element object.'''
         for cond in self._targets:
             new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Targets')
             cond.save_xml(doc, new_element)
             element.appendChild(new_element)
+
+    def to_dict(self):
+        '''Save this message sending object into a dictionary.'''
+        targets = []
+        for cond in self._targets:
+            targets.append(cond.to_dict())
+        if targets:
+            return {'targets': targets}
+        else:
+            return {}
 
 
 ##############################################################################
@@ -265,6 +293,20 @@ class Condition(object):
             self._properties[name] = value
         return self
 
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a condition into this object.'''
+        self.sequence = int(y['sequence'])
+        self.target_component = \
+                TargetExecutionContext().parse_yaml(y['targetComponent'])
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y.get(RTS_EXT_NS_YAML + 'properties'):
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
+        return self
+
     def save_xml(self, doc, element):
         '''Save this condition into an xml.dom.Element object.'''
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'sequence',
@@ -277,6 +319,20 @@ class Condition(object):
                                                    RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    def to_dict(self):
+        '''Save this condition into a dictionary.'''
+        d = {'sequence': self.sequence,
+                'targetComponent': self.target_component.to_dict()}
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+        return d
 
 
 ##############################################################################
@@ -380,20 +436,43 @@ class Preceding(Condition):
         if node.hasAttributeNS(RTS_NS, 'timeout'):
             self.timeout = int(node.getAttributeNS(RTS_NS, 'timeout'))
         else:
-            self.timeout = ''
+            self.timeout = 0
         if node.hasAttributeNS(RTS_NS, 'sendingTiming'):
             self.sending_timing = node.getAttributeNS(RTS_NS, 'sendingTiming')
         else:
-            self.sending_timing = ''
+            self.sending_timing = 'SYNC'
+        self._preceding_components = []
         for c in node.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
             self._preceding_components.append(TargetExecutionContext().parse_xml_node(c))
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a preceding condition into this
+        object.
+
+        '''
+        super(Preceding, self).parse_yaml(y)
+        c = y['condition']['preceding']
+        if 'timeout' in c:
+            self.timeout = int(c['timeout'])
+        else:
+            self.timeout = 0
+        if 'sendingTiming' in c:
+            self.sending_timing = c['sendingTiming']
+        else:
+            self.sending_timing = 'SYNC'
+        self._preceding_components = []
+        if 'precedingComponents' in c:
+            for p in c.get('precedingComponents'):
+                self._preceding_components.append(TargetExecutionContext().parse_yaml(p))
         return self
 
     def save_xml(self, doc, element):
         '''Save this preceding condition into an xml.dom.Element object.'''
         super(Preceding, self).save_xml(doc, element)
         if self.timeout:
-            element.setAttributeNS(RTS_NS, RTS_NS_S + 'timeout', self.timeout)
+            element.setAttributeNS(RTS_NS, RTS_NS_S + 'timeout',
+                    str(self.timeout))
         if self.sending_timing:
             element.setAttributeNS(RTS_NS, RTS_NS_S + 'sendingTiming',
                                    self.sending_timing)
@@ -402,6 +481,22 @@ class Preceding(Condition):
                                               RTS_NS_S + 'PrecedingComponents')
             pc.save_xml(doc, new_element)
             element.appendChild(new_element)
+
+    def to_dict(self):
+        '''Save this preceding condition into a dictionary.'''
+        d = super(Preceding, self).to_dict()
+        e = {}
+        if self.timeout != 0:
+            e['timeout'] = self.timeout
+        if self.sending_timing:
+            e['sendingTiming'] = self.sending_timing
+        pcs = []
+        for pc in self._preceding_components:
+            pcs.append(pc.to_dict())
+        if pcs:
+            e['precedingComponents'] = pcs
+        d['condition'] = {'preceding': e}
+        return d
 
 
 ##############################################################################
@@ -414,7 +509,7 @@ class WaitTime(Condition):
 
     '''
 
-    def __init__(self, wait_time, sequence=0,
+    def __init__(self, wait_time=0, sequence=0,
                  target_component=TargetExecutionContext()):
         '''Constructor.
 
@@ -455,14 +550,30 @@ class WaitTime(Condition):
         this object.
 
         '''
-        Condition.parse_xml_node(self, node)
+        super(WaitTime, self).parse_xml_node(node)
         self.wait_time = int(node.getAttributeNS(RTS_NS, 'waitTime'))
+        return self
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a wait_time condition into this
+        object.
+
+        '''
+        super(WaitTime, self).parse_yaml(y)
+        self.wait_time = int(y['condition']['waitTime']['waitTime'])
         return self
 
     def save_xml(self, doc, element):
         '''Save this wait_time condition into an xml.dom.Element object.'''
         super(WaitTime, self).save_xml(doc, element)
-        element.setAttributeNS(RTS_NS, RTS_NS_S + 'waitTime', self.wait_time)
+        element.setAttributeNS(RTS_NS, RTS_NS_S + 'waitTime',
+                str(self.wait_time))
+
+    def to_dict(self):
+        '''Save this wait_time condition into a dictionary.'''
+        d = super(WaitTime, self).to_dict()
+        d['condition'] = {'waitTime': {'waitTime': self.wait_time}}
+        return d
 
 
 # vim: tw=79

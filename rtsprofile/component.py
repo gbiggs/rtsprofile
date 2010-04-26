@@ -23,7 +23,8 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S
+from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
+                       RTS_EXT_NS_YAML
 from rtsprofile import composite_type as comp_type
 from rtsprofile.config_set import ConfigurationSet
 from rtsprofile.exceptions import InvalidCompositeTypeError
@@ -422,7 +423,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         self.comment = node.getAttributeNS(RTS_EXT_NS, 'comment')
         if node.hasAttributeNS(RTS_EXT_NS, 'visible'):
             visible = node.getAttributeNS(RTS_EXT_NS, 'visible')
-            if visible == 'true' or visible == '1':
+            if visible.lower() == 'true' or visible == '1':
                 self.visible = True
             else:
                 self.visible = False
@@ -502,6 +503,114 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
                                                    RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
+
+    ###########################################################################
+    # YAML
+
+    def parse_yaml(self, y):
+        '''Parse a YAML specification of a component into this object.'''
+        self._reset()
+        self.id = y['id']
+        self.path_uri = y['pathUri']
+        if 'activeConfigurationSet' in y:
+            self.active_configuration_set = y['activeConfigurationSet']
+        else:
+            self.active_configuration_set = ''
+        self.instance_name = y['instanceName']
+        self.compositeType = comp_type.from_string(y['compositeType'])
+        required = y['isRequired']
+        if required == 'true' or required == '1':
+            self.is_required = True
+        else:
+            self.is_required = False
+        if RTS_EXT_NS_YAML + 'comment' in y:
+            self.comment = y[RTS_EXT_NS_YAML + 'comment']
+        self.visible = False
+        if RTS_EXT_NS_YAML + 'visible' in y:
+            visible = y.get(RTS_EXT_NS_YAML + 'visible')
+            if visible == True or visible == 'true' or visible == 'True':
+                self.visible = True
+
+        # Get the children
+        if 'dataPorts' in y:
+            for p in y.get('dataPorts'):
+                self._data_ports.append(DataPort().parse_yaml(p))
+        if 'servicePorts' in y:
+            for p in y.get('servicePorts'):
+                self._service_ports.append(ServicePort().parse_yaml(p))
+        if 'configurationSets' in y:
+            for p in y.get('configurationSets'):
+                self._config_sets.append(ConfigurationSet().parse_yaml(p))
+        if 'executionContexts' in y:
+            for p in y.get('executionContexts'):
+                self._exec_contexts.append(ExecutionContext().parse_yaml(p))
+        if 'participants' in y:
+            for p in y.get('participants'):
+                self._participants.append(Participant().parse_yaml(p))
+
+        # Extended profile children
+        if RTS_EXT_NS_YAML + 'location' in y:
+            l = y[RTS_EXT_NS_YAML + 'location']
+            self._location = Location().parse_yaml(l)
+        if RTS_EXT_NS_YAML + 'properties' in y:
+            for p in y.get(RTS_EXT_NS_YAML + 'properties'):
+                if 'value' in p:
+                    value = p['value']
+                else:
+                    value = None
+                self._properties[p['name']] = value
+
+        return self
+
+    def to_dict(self):
+        d = {'id': self.id,
+                'pathUri': self.path_uri,
+                'instanceName': self.instance_name,
+                'compositeType': comp_type.to_string(self.compositeType),
+                'isRequired': str(self.is_required).lower(),
+                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
+        if self.active_configuration_set:
+            d['activeConfigurationSet'] = self.active_configuration_set
+        if self.comment:
+            d[RTS_EXT_NS_YAML + 'comment'] = self.comment
+
+        ports = []
+        for p in self.data_ports:
+            ports.append(p.to_dict())
+        if ports:
+            d['dataPorts'] = ports
+        ports = []
+        for p in self.service_ports:
+            ports.append(p.to_dict())
+        if ports:
+            d['servicePorts'] = ports
+        sets = []
+        for cs in self.configuration_sets:
+            sets.append(cs.to_dict())
+        if sets:
+            d['configurationSets'] = sets
+        ecs = []
+        for ec in self.execution_contexts:
+            ecs.append(ec.to_dict())
+        if ecs:
+            d['executionContexts'] = ecs
+        participants = []
+        for p in self.participants:
+            participants.append(p.to_dict())
+        if participants:
+            d['participants'] = participants
+
+        d[RTS_EXT_NS_YAML + 'location'] = self._location.to_dict()
+        props = []
+        for name in self.properties:
+            p = {'name': name}
+            if self.properties[name]:
+                p['value'] = str(self.properties[name])
+            props.append(p)
+        if props:
+            d[RTS_EXT_NS_YAML + 'properties'] = props
+
+        return d
 
     ###########################################################################
     # Internal functions
