@@ -484,7 +484,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     def parse_from_xml(self, xml_spec):
         '''Parse a string or file containing an XML specification.'''
-        if type(xml_spec) == str:
+        if type(xml_spec) == str or type(xml_spec) == unicode:
             dom = xml.dom.minidom.parseString(xml_spec)
         else:
             dom = xml.dom.minidom.parse(xml_spec)
@@ -585,10 +585,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         self.id = root['id']
         if 'abstract' in root:
             self.abstract = root['abstract']
-        self.creation_date = '{year}-{month}-{day}T{hour}:{minute}:\
-{second}'.format(**root['creationDate'])
-        self.update_date = '{year}-{month}-{day}T{hour}:{minute}:\
-{second}'.format(**root['updateDate'])
+        self.creation_date = '{year:04}-{month:02}-{day:02}T{hour:02}:\
+{minute:02}:{second:02}'.format(**root['creationDate'])
+        self.update_date = '{year:04}-{month:02}-{day:02}T{hour:02}:\
+{minute:02}:{second:02}'.format(**root['updateDate'])
         self.version = root['version']
         if RTS_EXT_NS_YAML + 'comment' in root:
             self.comment = root[RTS_EXT_NS_YAML + 'comment']

@@ -89,15 +89,16 @@ class MessageSending(object):
 
         '''
         self._targets = []
-        for t in y['targets']:
-            if 'waitTime' in t['condition']:
-                new_target = WaitTime()
-            elif 'preceding' in t['condition']:
-                new_target = Preceding()
-            else:
-                new_target = Condition()
-            new_target.parse_yaml(t)
-            self._targets.append(new_target)
+        if 'targets' in y:
+            for t in y['targets']:
+                if 'waitTime' in t['condition']:
+                    new_target = WaitTime()
+                elif 'preceding' in t['condition']:
+                    new_target = Preceding()
+                else:
+                    new_target = Condition()
+                new_target.parse_yaml(t)
+                self._targets.append(new_target)
         return self
 
     def save_xml(self, doc, element):

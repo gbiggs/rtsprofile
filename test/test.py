@@ -75,6 +75,7 @@ This save-load-check process is then repeated for the YAML output.
         print
         failed = True
     if xml_prof_str != orig_prof_str:
+        print 'XML profile does not equal original profile.'
         failed = True
     if failed:
         print >>sys.stderr, 'XML test failed.'
@@ -106,6 +107,7 @@ This save-load-check process is then repeated for the YAML output.
         print
         failed = True
     if yaml_prof_str != orig_prof_str:
+        print 'YAML profile does not equal original profile.'
         failed = True
     if failed:
         print >>sys.stderr, 'YAML test failed.'

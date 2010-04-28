@@ -46,6 +46,7 @@ def from_string(dir_string):
     @raises InvalidDirectionError
 
     '''
+    dir_string = dir_string.upper()
     if dir_string == UP:
         return UP
     elif dir_string == DOWN:
