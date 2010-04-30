@@ -566,7 +566,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         d = {'id': self.id,
                 'pathUri': self.path_uri,
                 'instanceName': self.instance_name,
-                'compositeType': comp_type.to_string(self.compositeType),
+                'compositeType': comp_type.to_string(self.composite_type),
                 'isRequired': str(self.is_required).lower(),
                 RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
         if self.active_configuration_set:

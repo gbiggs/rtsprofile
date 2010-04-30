@@ -35,9 +35,17 @@ from rtsprofile.exceptions import InvalidTypeError, RequiredAttributeError
 ## Public API functions
 
 def date_to_dict(date):
-    t = time.strptime(date, '%Y-%m-%dT%H:%M:%S')
-    return {'year': t.tm_year, 'month': t.tm_mon, 'day': t.tm_mday, 'hour':
-            t.tm_hour, 'minute': t.tm_min, 'second': t.tm_sec}
+    date = date.split('T')
+    t = time.strptime(date[0], '%Y-%m-%d')
+    year = t.tm_year
+    month = t.tm_mon
+    day = t.tm_mday
+    t = time.strptime(date[1], '%H:%M:%S')
+    hour = t.tm_hour
+    min = t.tm_min
+    sec = t.tm_sec
+    return {'year': year, 'month': month, 'day': day, 'hour': hour,
+            'minute': min, 'second': sec}
 
 def get_direct_child_elements_xml(node, prefix=None, local_name=None):
     for c in node.childNodes:

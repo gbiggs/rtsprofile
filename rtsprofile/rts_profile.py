@@ -672,22 +672,22 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
             prof[RTS_EXT_NS_YAML + 'comment'] = self.comment
 
         components = []
-        for c in self._components:
+        for c in self.components:
             components.append(c.to_dict())
         if components:
             prof['components'] = components
         groups = []
-        for g in self._groups:
+        for g in self.groups:
             groups.append(g.to_dict())
         if groups:
             prof['groups'] = groups
         d_connectors = []
-        for c in self._data_port_connectors:
+        for c in self.data_port_connectors:
             d_connectors.append(c.to_dict())
         if d_connectors:
             prof['dataPortConnectors'] = d_connectors
         s_connectors = []
-        for c in self._service_port_connectors:
+        for c in self.service_port_connectors:
             s_connectors.append(c.to_dict())
         if s_connectors:
             prof['servicePortConnectors'] = s_connectors
