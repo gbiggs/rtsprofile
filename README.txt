@@ -3,7 +3,8 @@ rtsprofile
 
 rtsprofile is a Python library providing an interface to the RT System Profile
 specification. This specification describes a complete RT system and can be
-used to reconstruct that system at a later time.
+used to reconstruct that system at a later time. The library supports both XML
+and YAML formatted files.
 
 This software is developed at the National Institute of Advanced Industrial
 Science and Technology. Approval number H22PRO-1087. The development was
@@ -64,6 +65,22 @@ information about the RT System. For further details, see the doxygen-generated
 documentation.
 
 
+Running the tests
+----------------------
+
+A pair of test specifications, one in each format, are included with the
+library. You can execute the test on these files as below:
+
+$ src/rtsprofile $ python test/test.py ./test/rtsystem.xml
+$ src/rtsprofile $ python test/test.py ./test/rtsystem.yaml
+
+Be aware that, depending on your Python paths, the tests may be executed
+against an installed copy of rtsprofile rather than the copy in the current
+working directory.
+
+These tests are not yet complete coverage.
+
+
 API naming conventions
 ----------------------
 
@@ -91,5 +108,16 @@ Future features
 The following features are planned for future releases:
 
 - Complete unit tests.
-- Reading and writing in YAML format.
+
+
+Changelog
+---------
+
+2.0:
+- Fixed parsing of Message Sending nodes.
+- PrecedingCondition timeout type is now integer.
+- Added YAML support.
+- Added tests.
+- Changed the default string for Preceding conditions to "SYNC".
+- Minor bug fixes
 
