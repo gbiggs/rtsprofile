@@ -71,7 +71,7 @@ class MessageSending(object):
         '''
         self._targets = []
         for c in node.getElementsByTagNameNS(RTS_NS, 'targets'):
-            if c.getAttributeNS(RTS_NS, 'waitTime'):
+            if c.getAttributeNS(RTS_NS, 'WaitTime'):
                 new_target = WaitTime()
             elif c.getAttributeNS(RTS_NS, 'timeout') or \
                     c.getAttributeNS(RTS_NS, 'sendingTiming') or \
