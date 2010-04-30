@@ -441,7 +441,7 @@ class Preceding(Condition):
         if node.hasAttributeNS(RTS_NS, 'sendingTiming'):
             self.sending_timing = node.getAttributeNS(RTS_NS, 'sendingTiming')
         else:
-            self.sending_timing = 'SYNC'
+            self.sending_timing = 'NOT_SYNC'
         self._preceding_components = []
         for c in node.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
             self._preceding_components.append(TargetExecutionContext().parse_xml_node(c))
@@ -461,7 +461,7 @@ class Preceding(Condition):
         if 'sendingTiming' in c:
             self.sending_timing = c['sendingTiming']
         else:
-            self.sending_timing = 'SYNC'
+            self.sending_timing = 'NOT_SYNC'
         self._preceding_components = []
         if 'precedingComponents' in c:
             for p in c.get('precedingComponents'):
