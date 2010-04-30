@@ -25,6 +25,7 @@ __version__ = '$Revision: $'
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
                        RTS_EXT_NS_YAML
+from rtsprofile.exceptions import InvalidParticipantNodeError
 from rtsprofile.targets import TargetExecutionContext
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, validate_attribute
@@ -71,11 +72,9 @@ class MessageSending(object):
         '''
         self._targets = []
         for c in node.getElementsByTagNameNS(RTS_NS, 'targets'):
-            if c.getAttributeNS(RTS_NS, 'WaitTime'):
+            if c.getElementsByTagNameNS(RTS_NS, 'WaitTime'):
                 new_target = WaitTime()
-            elif c.getAttributeNS(RTS_NS, 'timeout') or \
-                    c.getAttributeNS(RTS_NS, 'sendingTiming') or \
-                    c.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
+            elif c.getElementsByTagNameNS(RTS_NS, 'Preceding'):
                 new_target = Preceding()
             else:
                 new_target = Condition()
@@ -434,16 +433,20 @@ class Preceding(Condition):
 
         '''
         super(Preceding, self).parse_xml_node(node)
-        if node.hasAttributeNS(RTS_NS, 'timeout'):
-            self.timeout = int(node.getAttributeNS(RTS_NS, 'timeout'))
+        p_nodes = node.getElementsByTagNameNS(RTS_NS, 'Preceding')
+        if p_nodes.length != 1:
+            raise InvalidParticipantNodeError
+        p_node = p_nodes[0]
+        if p_node.hasAttributeNS(RTS_NS, 'timeout'):
+            self.timeout = int(p_node.getAttributeNS(RTS_NS, 'timeout'))
         else:
             self.timeout = 0
-        if node.hasAttributeNS(RTS_NS, 'sendingTiming'):
-            self.sending_timing = node.getAttributeNS(RTS_NS, 'sendingTiming')
+        if p_node.hasAttributeNS(RTS_NS, 'sendingTiming'):
+            self.sending_timing = p_node.getAttributeNS(RTS_NS, 'sendingTiming')
         else:
             self.sending_timing = 'NOT_SYNC'
         self._preceding_components = []
-        for c in node.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
+        for c in p_node.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
             self._preceding_components.append(TargetExecutionContext().parse_xml_node(c))
         return self
 
@@ -471,17 +474,19 @@ class Preceding(Condition):
     def save_xml(self, doc, element):
         '''Save this preceding condition into an xml.dom.Element object.'''
         super(Preceding, self).save_xml(doc, element)
+        pre_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Preceding')
         if self.timeout:
-            element.setAttributeNS(RTS_NS, RTS_NS_S + 'timeout',
+            pre_element.setAttributeNS(RTS_NS, RTS_NS_S + 'timeout',
                     str(self.timeout))
         if self.sending_timing:
-            element.setAttributeNS(RTS_NS, RTS_NS_S + 'sendingTiming',
+            pre_element.setAttributeNS(RTS_NS, RTS_NS_S + 'sendingTiming',
                                    self.sending_timing)
         for pc in self._preceding_components:
             new_element = doc.createElementNS(RTS_NS,
                                               RTS_NS_S + 'PrecedingComponents')
             pc.save_xml(doc, new_element)
-            element.appendChild(new_element)
+            pre_element.appendChild(new_element)
+        element.appendChild(pre_element)
 
     def to_dict(self):
         '''Save this preceding condition into a dictionary.'''
@@ -552,7 +557,11 @@ class WaitTime(Condition):
 
         '''
         super(WaitTime, self).parse_xml_node(node)
-        self.wait_time = int(node.getAttributeNS(RTS_NS, 'waitTime'))
+        wait_time_nodes = node.getElementsByTagNameNS(RTS_NS, 'WaitTime')
+        if wait_time_nodes.length != 1:
+            raise InvalidParticipantNodeError
+        self.wait_time = int(wait_time_nodes[0].getAttributeNS(RTS_NS,
+                'waitTime'))
         return self
 
     def parse_yaml(self, y):
@@ -567,8 +576,10 @@ class WaitTime(Condition):
     def save_xml(self, doc, element):
         '''Save this wait_time condition into an xml.dom.Element object.'''
         super(WaitTime, self).save_xml(doc, element)
-        element.setAttributeNS(RTS_NS, RTS_NS_S + 'waitTime',
+        new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'WaitTime')
+        new_element.setAttributeNS(RTS_NS, RTS_NS_S + 'waitTime',
                 str(self.wait_time))
+        element.appendChild(new_element)
 
     def to_dict(self):
         '''Save this wait_time condition into a dictionary.'''
