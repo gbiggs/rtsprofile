@@ -60,7 +60,7 @@ class MessageSending(object):
 
     @targets.setter
     def targets(self, targets):
-        validate_attribute(targets, 'message_sending.Targets',
+        validate_attribute(targets, 'message_sending.targets',
                            expected_type=list, required=False)
         self._targets = targets
 
@@ -70,7 +70,7 @@ class MessageSending(object):
 
         '''
         self._targets = []
-        for c in node.getElementsByTagNameNS(RTS_NS, 'Targets'):
+        for c in node.getElementsByTagNameNS(RTS_NS, 'targets'):
             if c.getAttributeNS(RTS_NS, 'waitTime'):
                 new_target = WaitTime()
             elif c.getAttributeNS(RTS_NS, 'timeout') or \
@@ -104,7 +104,7 @@ class MessageSending(object):
     def save_xml(self, doc, element):
         '''Save this message_sending object into an xml.dom.Element object.'''
         for cond in self._targets:
-            new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'Targets')
+            new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'targets')
             cond.save_xml(doc, new_element)
             element.appendChild(new_element)
 
