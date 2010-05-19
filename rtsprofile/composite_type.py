@@ -37,11 +37,12 @@ __version__ = '$Revision: $'
 
 from rtsprofile.exceptions import InvalidCompositeTypeError
 
-
 NONE = 'None'
-ALLSHARED = 'AllShared'
-ECSHARED = 'ECShared'
-NONSHARED = 'NonShared'
+PERIODIC_EC_SHARED = 'PeriodicECShared'
+PERIODIC_STATE_SHARED = 'PeriodicStateShared'
+GROUPING = 'Grouping'
+FSM_EC_SHARED = 'FsmECSHared'
+FSM_STATE_SHARED = 'FsmStateShared'
 
 
 # Use this to match the correct type when specifying data correctness
@@ -56,12 +57,16 @@ def from_string(type_string):
     '''
     if type_string == NONE:
         return NONE
-    elif type_string == ALLSHARED:
-        return ALLSHARED
-    elif type_string == ECSHARED:
-        return ECSHARED
-    elif type_string == NONSHARED:
-        return NONSHARED
+    elif type_string == PERIODIC_EC_SHARED:
+        return PERIODC_EC_SHARED
+    elif type_string == PERIODIC_STATE_SHARED:
+        return PERIODIC_STATE_SHARED
+    elif type_string == GROUPING:
+        return GROUPING
+    elif type_string == FSM_EC_SHARED:
+        return FSM_EC_SHARED
+    elif type_string == FSM_STATE_SHARED:
+        return FSM_STATE_SHARED
     else:
         raise InvalidCompositeTypeError(type_string)
 
@@ -74,12 +79,16 @@ def to_string(comp_type):
     '''
     if comp_type == NONE:
         return NONE
-    elif comp_type == ALLSHARED:
-        return ALLSHARED
-    elif comp_type == ECSHARED:
-        return ECSHARED
-    elif comp_type == NONSHARED:
-        return NONSHARED
+    elif comp_type== PERIODIC_EC_SHARED:
+        return PERIODC_EC_SHARED
+    elif comp_type == PERIODIC_STATE_SHARED:
+        return PERIODIC_STATE_SHARED
+    elif comp_type == GROUPING:
+        return GROUPING
+    elif comp_type == FSM_EC_SHARED:
+        return FSM_EC_SHARED
+    elif comp_type == FSM_STATE_SHARED:
+        return FSM_STATE_SHARED
     else:
         raise InvalidCompositeTypeError(type_string)
 

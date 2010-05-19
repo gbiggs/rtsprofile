@@ -403,9 +403,9 @@ class Preceding(Condition):
         '''Timing for executing actions.
 
         Either wait for the preceding RT component to finish executing the
-        action, or execute the action without waiting for the preceding RT
-        component to finish. When not specified, the first option will be
-        assumed.
+        action (specified by "SYNC"), or execute the action without waiting for
+        the preceding RT component to finish (specified by "ASYNC"). When not
+        specified, the first option will be assumed.
 
         '''
         return self._sending_timing
@@ -444,7 +444,7 @@ class Preceding(Condition):
         if p_node.hasAttributeNS(RTS_NS, 'sendingTiming'):
             self.sending_timing = p_node.getAttributeNS(RTS_NS, 'sendingTiming')
         else:
-            self.sending_timing = 'NOT_SYNC'
+            self.sending_timing = 'ASYNC'
         self._preceding_components = []
         for c in p_node.getElementsByTagNameNS(RTS_NS, 'PrecedingComponents'):
             self._preceding_components.append(TargetExecutionContext().parse_xml_node(c))
@@ -464,7 +464,7 @@ class Preceding(Condition):
         if 'sendingTiming' in c:
             self.sending_timing = c['sendingTiming']
         else:
-            self.sending_timing = 'NOT_SYNC'
+            self.sending_timing = 'ASYNC'
         self._preceding_components = []
         if 'precedingComponents' in c:
             for p in c.get('precedingComponents'):
