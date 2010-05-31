@@ -72,8 +72,8 @@ Running the tests
 A pair of test specifications, one in each format, are included with the
 library. You can execute the test on these files as below:
 
-$ src/rtsprofile $ python test/test.py ./test/rtsystem.xml
-$ src/rtsprofile $ python test/test.py ./test/rtsystem.yaml
+ $ python test/test.py ./test/rtsystem.xml
+ $ python test/test.py ./test/rtsystem.yaml
 
 Be aware that, depending on your Python paths, the tests may be executed
 against an installed copy of rtsprofile rather than the copy in the current
