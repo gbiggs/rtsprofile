@@ -37,7 +37,7 @@ profiles using the RTSProfile XML schema.',
       author='Geoffrey Biggs',
       author_email='git@killbots.net',
       url='http://github.com/gbiggs/rtsprofile',
-      license='BSD',
+      license='EPL',
       classifiers=[
           'Development Status :: 5 - Production/Stable',
           'Intended Audience :: Developers',
