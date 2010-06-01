@@ -7,7 +7,7 @@ used to reconstruct that system at a later time. The library supports both XML
 and YAML formatted files.
 
 This software is developed at the National Institute of Advanced Industrial
-Science and Technology. Approval number H22PRO-1087. The development was
+Science and Technology. Approval number H22PRO-1141. The development was
 financially supported by the New Energy and Industrial Technology Development
 Organisation Project for Strategic Development of Advanced Robotics Elemental
 Technologies.  This software is licensed under the Eclipse Public License -v
