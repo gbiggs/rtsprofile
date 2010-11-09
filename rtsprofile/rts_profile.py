@@ -140,7 +140,6 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @id.setter
     def id(self, id):
-        print 'setting id to ', id
         validate_attribute(id, 'rts_profile.id',
                            expected_type=[str, unicode], required=True)
         self._id = id
