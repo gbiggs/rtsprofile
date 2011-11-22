@@ -126,6 +126,9 @@ contribute patches.
 Changelog
 ---------
 
+3.0:
+- Use the correct namespace string when saving connection properties.
+
 2.0:
 - Fixed parsing of Message Sending nodes.
 - PrecedingCondition timeout type is now integer.

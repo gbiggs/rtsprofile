@@ -412,7 +412,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         element.appendChild(new_element)
         for p in self.properties:
             new_prop_element = doc.createElementNS(RTS_EXT_NS,
-                                                   RTS_EXT_NS + 'Properties')
+                                                   RTS_EXT_NS_S + 'Properties')
             properties_to_xml(new_prop_element, p, self.properties[p])
             element.appendChild(new_prop_element)
 
