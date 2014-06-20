@@ -69,7 +69,7 @@ class Component(object):
         '''
         self._reset()
         validate_attribute(id, 'component.id',
-                           expected_type=string_types(), unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._id = id
         validate_attribute(path_uri, 'component.pathUri',
                            expected_type=string_types(), required=False)

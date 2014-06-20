@@ -20,10 +20,10 @@ parser and an XML specification meeting the RtsProfile schema.
 
 '''
 
+from __future__ import print_function
+
 __version__ = '$Revision: $'
 # $Source$
-
-from __future__ import print_function
 
 from datetime import datetime, MINYEAR
 import sys
