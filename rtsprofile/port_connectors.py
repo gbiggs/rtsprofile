@@ -29,7 +29,8 @@ from rtsprofile.exceptions import InvalidDataPortConnectorNodeError, \
 from rtsprofile.targets import TargetPort
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
-                             properties_to_xml, validate_attribute
+                             properties_to_xml, validate_attribute, \
+                             string_types
 
 
 ##############################################################################
@@ -69,23 +70,23 @@ class DataPortConnector(object):
 
         '''
         validate_attribute(connector_id, 'dataport_connector.connectorID',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._connector_id = connector_id
         validate_attribute(name, 'dataport_connector.name',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._name = name
         validate_attribute(data_type, 'dataport_connector.dataType',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._data_type = data_type
         validate_attribute(interface_type, 'dataport_connector.interfaceType',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._interface_type = interface_type
         validate_attribute(data_flow_type, 'dataport_connector.dataflowType',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._data_flow_type = data_flow_type
         validate_attribute(subscription_type,
                            'dataport_connector.subscriptionType',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._subscription_type = subscription_type
         validate_attribute(push_interval, 'dataport_connector.pushInterval',
                            expected_type=[int, float], required=False)
@@ -99,7 +100,7 @@ class DataPortConnector(object):
                            expected_type=TargetPort, required=False)
         self._target_data_port = target_data_port
         validate_attribute(comment, 'component.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
         validate_attribute(visible, 'component.ext.visible',
                            expected_type=bool, required=False)
@@ -131,7 +132,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @connector_id.setter
     def connector_id(self, connector_id):
         validate_attribute(connector_id, 'dataport_connector.connectorID',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._connector_id = connector_id
 
     @property
@@ -142,7 +143,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @name.setter
     def name(self, name):
         validate_attribute(name, 'dataport_connector.name',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._name = name
 
     @property
@@ -153,7 +154,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @data_type.setter
     def data_type(self, data_type):
         validate_attribute(data_type, 'dataport_connector.dataType',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._data_type = data_type
 
     @property
@@ -169,7 +170,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @interface_type.setter
     def interface_type(self, interface_type):
         validate_attribute(interface_type, 'dataport_connector.interfaceType',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._interface_type = interface_type
 
     @property
@@ -185,7 +186,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @data_flow_type.setter
     def data_flow_type(self, data_flow_type):
         validate_attribute(data_flow_type, 'dataport_connector.dataflowType',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._data_flow_type = data_flow_type
 
     @property
@@ -203,7 +204,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     def subscription_type(self, subscription_type):
         validate_attribute(subscription_type,
                            'dataport_connector.subscriptionType',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._subscription_type = subscription_type
 
     @property
@@ -260,7 +261,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
     @comment.setter
     def comment(self, comment):
         validate_attribute(comment, 'dataport_connector.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
 
     @property
@@ -471,13 +472,13 @@ class ServicePortConnector(object):
 
         '''
         validate_attribute(connector_id, 'serviceport_connector.connectorID',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._connector_id = connector_id
         validate_attribute(name, 'serviceport_connector.name',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._name = name
         validate_attribute(trans_method, 'serviceport_connector.transMethod',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._trans_method = trans_method
         validate_attribute(source_service_port,
                            'serviceport_connector.sourceServicePort',
@@ -488,7 +489,7 @@ class ServicePortConnector(object):
                            expected_type=TargetPort, required=True)
         self._target_service_port = target_service_port
         validate_attribute(comment, 'component.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
         validate_attribute(visible, 'component.ext.visible',
                            expected_type=bool, required=False)
@@ -519,7 +520,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
     @connector_id.setter
     def connector_id(self, connector_id):
         validate_attribute(connector_id, 'serviceport_connector.connectorID',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._connector_id = connector_id
 
     @property
@@ -530,7 +531,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
     @name.setter
     def name(self, name):
         validate_attribute(name, 'serviceport_connector.name',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._name = name
 
     @property
@@ -546,7 +547,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
     @trans_method.setter
     def trans_method(self, trans_method):
         validate_attribute(trans_method, 'serviceport_connector.transMethod',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._trans_method = trans_method
 
     @property
@@ -588,7 +589,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
     @comment.setter
     def comment(self, comment):
         validate_attribute(comment, 'serviceport_connector.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
 
     @property

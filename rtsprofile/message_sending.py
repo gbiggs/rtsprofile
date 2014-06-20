@@ -28,7 +28,8 @@ from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
 from rtsprofile.exceptions import InvalidParticipantNodeError
 from rtsprofile.targets import TargetExecutionContext
 from rtsprofile.utils import get_direct_child_elements_xml, \
-                             indent_string, validate_attribute
+                             indent_string, validate_attribute, \
+                             string_types
 
 
 ##############################################################################
@@ -366,7 +367,7 @@ class Preceding(Condition):
                            expected_type=int, required=False)
         self._timeout = timeout
         validate_attribute(sending_timing, 'preceding.sendingTiming',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._sending_timing = sending_timing
         validate_attribute(preceding_components,
                            'preceding.PrecedingComponents',
@@ -413,7 +414,7 @@ class Preceding(Condition):
     @sending_timing.setter
     def sending_timing(self, sending_timing):
         validate_attribute(sending_timing, 'preceding.sendingTiming',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._sending_timing = sending_timing
 
     @property

@@ -25,7 +25,7 @@ __version__ = '$Revision: $'
 
 from rtsprofile import RTS_NS, RTS_NS_S
 from rtsprofile.exec_context import ExecutionContext
-from rtsprofile.utils import indent_string, validate_attribute
+from rtsprofile.utils import indent_string, validate_attribute, string_types
 
 
 ##############################################################################
@@ -47,7 +47,7 @@ class ConfigurationSet(object):
 
         '''
         validate_attribute(id, 'configuration_set.id',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._id = id
         self._config_data = []
 
@@ -88,7 +88,7 @@ class ConfigurationSet(object):
     @id.setter
     def id(self, id):
         validate_attribute(id, 'configuration_set.id',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._id = id
 
     def parse_xml_node(self, node):
@@ -150,10 +150,10 @@ class ConfigurationData(object):
 
         '''
         validate_attribute(name, 'configuration_set.name',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._name = name
         validate_attribute(data, 'configuration_set.data',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._data = data
 
     def __str__(self):
@@ -171,7 +171,7 @@ class ConfigurationData(object):
     @data.setter
     def data(self, data):
         validate_attribute(data, 'configuration_set.data',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._data = data
 
     @property
@@ -186,7 +186,7 @@ class ConfigurationData(object):
     @name.setter
     def name(self, name):
         validate_attribute(name, 'configuration_set.name',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._name = name
 
     def parse_xml_node(self, node):

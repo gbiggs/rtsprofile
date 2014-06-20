@@ -33,7 +33,8 @@ from rtsprofile.location import Location
 from rtsprofile.ports import DataPort, ServicePort
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
-                             properties_to_xml, validate_attribute
+                             properties_to_xml, validate_attribute, \
+                             string_types
 
 
 ##############################################################################
@@ -68,17 +69,17 @@ class Component(object):
         '''
         self._reset()
         validate_attribute(id, 'component.id',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), unicode], required=False)
         self._id = id
         validate_attribute(path_uri, 'component.pathUri',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._path_uri = path_uri
         validate_attribute(active_configuration_set,
                            'component.activeConfigurationSet',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._active_config_set = active_configuration_set
         validate_attribute(instance_name, 'component.instanceName',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._instance_name = instance_name
         validate_attribute(composite_type, 'component.compositeType',
                            expected_type=comp_type.const_type, required=False)
@@ -87,7 +88,7 @@ class Component(object):
                            expected_type=bool)
         self._is_required = is_required
         validate_attribute(comment, 'component.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
         validate_attribute(visible, 'component.ext.visible',
                            expected_type=bool, required=False)
@@ -150,7 +151,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
     @id.setter
     def id(self, id):
         validate_attribute(id, 'component.id',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._id = id
 
     @property
@@ -161,7 +162,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
     @path_uri.setter
     def path_uri(self, path_uri):
         validate_attribute(path_uri, 'component.pathUri',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._path_uri = path_uri
 
     @property
@@ -177,7 +178,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
     def active_configuration_set(self, active_config_set):
         validate_attribute(active_config_set,
                            'component.activeConfigurationSet',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._active_config_set = active_config_set
 
     @property
@@ -194,7 +195,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
     @instance_name.setter
     def instance_name(self, instance_name):
         validate_attribute(instance_name, 'component.instanceName',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._instance_name = instance_name
 
     @property
@@ -326,7 +327,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
     @comment.setter
     def comment(self, comment):
         validate_attribute(comment, 'component.ext.comment',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._comment = comment
 
     @property

@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S
-from rtsprofile.utils import validate_attribute
+from rtsprofile.utils import validate_attribute, string_types
 
 
 ##############################################################################
@@ -43,7 +43,7 @@ class ComponentGroup(object):
 
         '''
         validate_attribute(group_id, 'component_group.groupID',
-                           expected_type=[str, unicode], required=False)
+                           expected_type=string_types(), required=False)
         self._group_id = group_id
         validate_attribute(members, 'component_group.Members',
                            expected_type=list, required=False)
@@ -65,7 +65,7 @@ class ComponentGroup(object):
     @group_id.setter
     def group_id(self, group_id):
         validate_attribute(group_id, 'component_group.groupID',
-                           expected_type=[str, unicode], required=True)
+                           expected_type=string_types(), required=True)
         self._group_id = group_id
 
     @property

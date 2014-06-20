@@ -25,6 +25,7 @@ __version__ = '$Revision: $'
 
 import new
 import re
+import sys
 import time
 
 from rtsprofile import RTS_EXT_NS, RTS_EXT_NS_S
@@ -33,6 +34,12 @@ from rtsprofile.exceptions import InvalidTypeError, RequiredAttributeError
 
 ###############################################################################
 ## Public API functions
+
+def string_types():
+    if sys.version_info[0] == 3:
+        return [str]
+    else:
+        return [str, unicode]
 
 def date_to_dict(date):
     date = date.split('T')
