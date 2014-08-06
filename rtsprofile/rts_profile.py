@@ -486,7 +486,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     def parse_from_xml(self, xml_spec):
         '''Parse a string or file containing an XML specification.'''
-        if type(xml_spec) in utils.string_types():
+        if type(xml_spec) in string_types():
             dom = xml.dom.minidom.parseString(xml_spec)
         else:
             dom = xml.dom.minidom.parse(xml_spec)
