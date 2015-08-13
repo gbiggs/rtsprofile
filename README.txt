@@ -126,7 +126,7 @@ contribute patches.
 Changelog
 ---------
 
-3.0:
+4.0:
 - Use the correct namespace string when saving connection properties.
 
 2.0:

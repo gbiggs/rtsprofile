@@ -29,7 +29,7 @@ import sys
 
 
 setup(name='rtsprofile',
-      version='3.0.0',
+      version='4.0.0',
       description='Library to read, manipulate and write RT system profiles \
 using the RTSProfile XML schema.',
       long_description='Library to read, manipulate and write RT system \
