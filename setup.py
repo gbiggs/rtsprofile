@@ -24,18 +24,18 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-from distutils.core import setup
+import setuptools
 import sys
 
 
-setup(name='rtsprofile',
-      version='4.0.0',
+setuptools.setup(name='rtsprofile',
+      version='4.1.0',
       description='Library to read, manipulate and write RT system profiles \
 using the RTSProfile XML schema.',
       long_description='Library to read, manipulate and write RT system \
 profiles using the RTSProfile XML schema.',
       author='Geoffrey Biggs',
-      author_email='git@killbots.net',
+      author_email='geoffrey.biggs@aist.go.jp',
       url='http://github.com/gbiggs/rtsprofile',
       license='LGPL3',
       classifiers=[
@@ -48,9 +48,10 @@ profiles using the RTSProfile XML schema.',
           'Programming Language :: Python :: 2.7',
           'Topic :: Software Development',
           ],
-      packages=['rtsprofile']
+      packages=['rtsprofile'],
+      include_package_data = True,
+      zip_safe = True
       )
 
-
-# vim: tw=79
+#  vim: set ts=2 sw=2 tw=79 :
 

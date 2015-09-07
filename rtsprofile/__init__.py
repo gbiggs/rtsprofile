@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 # $Source$
 
 
-RTSPROFILE_VERSION = '1.0.0'
+RTSPROFILE_VERSION = '4.1.0'
 RTSPROFILE_SPEC_VERSION = '0.2'
 RTS_NS = 'http://www.openrtp.org/namespaces/rts'
 RTS_NS_S = 'rts:'

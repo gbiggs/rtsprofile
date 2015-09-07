@@ -128,6 +128,10 @@ contribute patches.
 Changelog
 ---------
 
+4.1
+
+- Switched setup script from distutils to setuptools
+
 4.0:
 - Use the correct namespace string when saving connection properties.
 
