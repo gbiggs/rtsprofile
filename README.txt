@@ -126,6 +126,7 @@ Changelog
 4.1
 
 - Switched setup script from distutils to setuptools
+- Dropped support for Python 2.6
 
 4.0:
 - Use the correct namespace string when saving connection properties.
