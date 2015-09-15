@@ -29,7 +29,7 @@ import sys
 
 
 setuptools.setup(name='rtsprofile',
-      version='4.2.0',
+      version='4.1.0',
       description='Library to read, manipulate and write RT system profiles \
 using the RTSProfile XML schema.',
       long_description='Library to read, manipulate and write RT system \
@@ -44,7 +44,6 @@ profiles using the RTSProfile XML schema.',
           'License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)',
           'Natural Language :: English',
           'Operating System :: OS Independent',
-          'Programming Language :: Python :: 2.6',
           'Programming Language :: Python :: 2.7',
           'Topic :: Software Development',
           ],

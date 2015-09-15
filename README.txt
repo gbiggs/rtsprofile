@@ -19,14 +19,9 @@ This software is licensed under the GNU Lesser General Public License version 3
 Requirements
 ------------
 
-rtsprofile uses the new string formatting operations that were introduced in
-Python 2.6. It will not function with an earlier version of Python. It has not
-been tested with Python 3 and it is likely that several changes will be
-necessary to make it function using this version of Python.
-
-For Ubuntu users, if you are using a version of Ubuntu prior to 9.04, you will
-need to install a suitable Python version by hand. You may want to consider
-upgrading to Ubuntu 9.04 or later (10.04 offers LTS).
+RTSProfile requires Python 2.7. It will not function with an earlier version of
+Python. It has not been tested with Python 3 and it is likely that several
+changes will be necessary to make it function using this version of Python.
 
 
 Installation
@@ -48,9 +43,9 @@ distribution:
     but if not you will need to set them yourself. On Windows, you will need to
     ensure that your Python site-packages directory is in the PYTHONPATH
     variable and the Python scripts directory is in the PATH variable.
-    Typically, these will be something like C:\Python26\Lib\site-packages\ and
-    C:\Python26\Scripts\, respectively (assuming Python 2.6 installed in
-    C:\Python26\).
+    Typically, these will be something like C:\Python27\Lib\site-packages\ and
+    C:\Python27\Scripts\, respectively (assuming Python 2.7 installed in
+    C:\Python27\).
 
 2. Use the Windows installer. This will perform the same job as running
    setup.py (see #1), but saves opening a command prompt. You may still need to
