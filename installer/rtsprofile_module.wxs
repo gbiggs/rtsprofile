@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+    xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
+  <Module Id="RTSProfile41"
+    Language="1033"
+    Codepage="1252"
+    Version="4.1.0">
+    <!--Language="1041" Codepage="932" for Japanese-->
+    <Package Id="54F6C036-634B-4478-8EE6-D5C217C5E0F2"
+      Keywords="Installer"
+      Description="RTSProfile 4.1 installer"
+      Comments="RTSProfile is a product of the National Institute for Advanced Industrial Science and Technology, Japan"
+      Manufacturer="AIST"
+      InstallerVersion="400"
+      Languages="1033"
+      SummaryCodepage="1252"
+      />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="PythonDir" Name="Python27">
+        <Directory Id="PythonLib" Name="Lib">
+          <Directory Id="PythonSitePackages" Name="site-packages">
+            <Directory Id="RTSProfile" Name="rtsprofile">
+            </Directory>
+            <Directory Id="RTSProfileInfo" Name="rtsprofile-4.1.0.dist-info">
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- RTSProfile files -->
+    <DirectoryRef Id="RTSProfile">
+      <Component Id="RTSProfile" Guid="54722927-EB19-41B6-AB72-00055EC42E95">
+        <RemoveFile Id="RTSProfile" On="both" Name="*.pyc"/>
+        <File Id="RTSProfile_component.py" Source="C:\Python27\Lib\site-packages\rtsprofile\component.py"/>
+        <File Id="RTSProfile_component_group.py" Source="C:\Python27\Lib\site-packages\rtsprofile\component_group.py"/>
+        <File Id="RTSProfile_composite_type.py" Source="C:\Python27\Lib\site-packages\rtsprofile\composite_type.py"/>
+        <File Id="RTSProfile_config_set.py" Source="C:\Python27\Lib\site-packages\rtsprofile\config_set.py"/>
+        <File Id="RTSProfile_direction.py" Source="C:\Python27\Lib\site-packages\rtsprofile\direction.py"/>
+        <File Id="RTSProfile_exceptions.py" Source="C:\Python27\Lib\site-packages\rtsprofile\exceptions.py"/>
+        <File Id="RTSProfile_exec_context.py" Source="C:\Python27\Lib\site-packages\rtsprofile\exec_context.py"/>
+        <File Id="RTSProfile_location.py" Source="C:\Python27\Lib\site-packages\rtsprofile\location.py"/>
+        <File Id="RTSProfile_message_sending.py" Source="C:\Python27\Lib\site-packages\rtsprofile\message_sending.py"/>
+        <File Id="RTSProfile_participant.py" Source="C:\Python27\Lib\site-packages\rtsprofile\participant.py"/>
+        <File Id="RTSProfile_ports.py" Source="C:\Python27\Lib\site-packages\rtsprofile\ports.py"/>
+        <File Id="RTSProfile_port_connectors.py" Source="C:\Python27\Lib\site-packages\rtsprofile\port_connectors.py"/>
+        <File Id="RTSProfile_rts_profile.py" Source="C:\Python27\Lib\site-packages\rtsprofile\rts_profile.py"/>
+        <File Id="RTSProfile_targets.py" Source="C:\Python27\Lib\site-packages\rtsprofile\targets.py"/>
+        <File Id="RTSProfile_utils.py" Source="C:\Python27\Lib\site-packages\rtsprofile\utils.py"/>
+        <File Id="RTSProfileInit" Source="C:\Python27\Lib\site-packages\rtsprofile\__init__.py" KeyPath="yes"/>
+      </Component>
+    </DirectoryRef>
+    <DirectoryRef Id="RTSProfileInfo">
+      <Component Id="RTSProfileInfo" Guid="E992ECC0-9880-40D9-A8F5-510794C0E48F">
+        <File Id="RTSProfileDESCRIPTION.rst" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\DESCRIPTION.rst" KeyPath="yes"/>
+        <File Id="RTSProfileMETADATA" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\METADATA"/>
+        <File Id="RTSProfilemetadata.json" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\metadata.json"/>
+        <File Id="RTSProfileRECORD" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\RECORD"/>
+        <File Id="RTSProfiletop_level.txt" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\top_level.txt"/>
+        <File Id="RTSProfileWHEEL" Source="C:\Python27\Lib\site-packages\rtsprofile-4.1.0.dist-info\WHEEL"/>
+      </Component>
+    </DirectoryRef>
+  </Module>
+</Wix>
