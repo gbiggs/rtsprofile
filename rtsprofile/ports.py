@@ -27,7 +27,7 @@ from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
                        RTS_EXT_NS_YAML
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              parse_properties_xml, validate_attribute, \
-                             string_types
+                             string_types, properties_to_xml
 
 
 ##############################################################################
