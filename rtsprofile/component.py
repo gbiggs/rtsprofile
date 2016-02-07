@@ -321,6 +321,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.comment = "test comment"
+
+        Invalid assignment should throw exception:
+        >>> c.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -339,6 +348,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.visible = True
+
+        Invalid assignment should throw exception:
+        >>> c.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -354,6 +372,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.location = Location()
+
+        Invalid assignment should throw exception:
+        >>> c.location = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.Location', <type 'int'>, <class 'rtsprofile.location.Location'>)
         '''
         return self._location
 
@@ -371,6 +398,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.properties = {'key':'value'}
+
+        Invalid assignment should throw exception:
+        >>> c.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -403,6 +439,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         '''Parse an xml.dom Node object representing a component into this
         object.
 
+        >>> c = Component()
         '''
         self._reset()
         # Get the attributes

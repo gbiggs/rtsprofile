@@ -1,0 +1,10 @@
+language: python
+python:
+  - "2.6"
+  - "2.7"
+  - "3.2"
+  - "3.3"
+  - "3.4"
+  - "3.5"
+install: "pip install rednose coverage"
+script: nosetests -v --rednose --with-doctest --with-coverage --cover-package=rtsprofile --cover-erase

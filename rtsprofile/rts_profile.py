@@ -353,6 +353,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Part of the extended profile.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.comment = "test comment"
+
+        Invalid assignment should throw exception:
+        >>> s.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rtsprofile.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -371,6 +380,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Part of the extended profile.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.version_up_log = ["test version_up_log"]
+
+        Invalid assignment should throw exception:
+        >>> s.version_up_log = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rtsprofile.ext.VersionUpLog', <type 'int'>, <type 'list'>)
         '''
         return self._version_up_log
 
@@ -485,7 +503,20 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     # XML
 
     def parse_from_xml(self, xml_spec):
-        '''Parse a string or file containing an XML specification.'''
+        '''Parse a string or file containing an XML specification.
+
+        Example:
+        >>> s = RtsProfile()
+        >>> s.parse_from_xml(open('test/rtsystem.xml'))
+        >>> len(s.components)
+        3
+
+        Load of invalid data should throw exception:
+        >>> s.parse_from_xml('non-XML string')
+        Traceback (most recent call last):
+        ...
+        ExpatError: syntax error: line 1, column 0
+        '''
         if type(xml_spec) in string_types():
             dom = xml.dom.minidom.parseString(xml_spec)
         else:
@@ -502,7 +533,20 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     # YAML
 
     def parse_from_yaml(self, yaml_spec):
-        '''Parse a string or file containing a YAML specification.'''
+        '''Parse a string or file containing a YAML specification.
+
+        Example:
+        >>> s = RtsProfile()
+        >>> s.parse_from_yaml(open('test/rtsystem.yaml'))
+        >>> len(s.components)
+        3
+
+        Load of invalid data should throw exception:
+        >>> s.parse_from_yaml('non-YAML string')
+        Traceback (most recent call last):
+        ...
+        RtsProfileError: Missing root node.
+        '''
         self._parse_yaml(yaml.safe_load(yaml_spec))
 
     def save_to_yaml(self):
