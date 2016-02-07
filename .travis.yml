@@ -6,5 +6,5 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
-install: "pip install rednose coverage"
+install: "pip install pyyaml rednose coverage"
 script: nosetests -v --rednose --with-doctest --with-coverage --cover-package=rtsprofile --cover-erase
