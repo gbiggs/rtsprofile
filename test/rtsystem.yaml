@@ -35,7 +35,7 @@ rtsProfile:
                 -
                     id: Comp1Ec1
                     kind: PeriodicExecutionContext
-                    rate: 1000
+                    rate: 1000.0
             id: RTC:SampleVendor:SampleCategory:SampleComponent:1.0.0
             instanceName: SampleComponent_1
             isRequired: true
@@ -68,7 +68,7 @@ rtsProfile:
                 -
                     id: Comp2Ec1
                     kind: PeriodicExecutionContext
-                    rate: 500
+                    rate: 500.0
             id: RTC:SampleVendor:SampleCategory:SampleComponent2:1.0.0
             instanceName: SampleComponent2_1
             isRequired: true
@@ -90,7 +90,7 @@ rtsProfile:
                 -
                     id: Comp3Ec1
                     kind: PeriodicExecutionContext
-                    rate: 300
+                    rate: 300.0
             id: RTC:SampleVendor:SampleCategory:SampleComponent3:0.5.0
             instanceName: SampleComponent3_1
             isRequired: true
@@ -237,5 +237,5 @@ rtsProfile:
         month: 5
         second: 53
         year: 2008
-    version: 0.2
+    version: '0.2'
 

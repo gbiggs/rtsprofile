@@ -95,42 +95,45 @@
     </rts:ServicePortConnectors>
     <rts:StartUp>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="1">
-            <rts:WaitTime rts:waitTime="1000"/>
             <rts:TargetComponent rts:id="Comp1Ec1"
                 rts:instanceName="SampleComponent_1"
                 rts:componentId="RTC:SampleVendor.SampleCategory.SampleComponent:1.0.0"/>
+            <rts:WaitTime rts:waitTime="1000"/>
         </rts:targets>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="2">
-            <rts:WaitTime rts:waitTime="500"/>
             <rts:TargetComponent rts:id="Comp2Ec1"
                 rts:instanceName="SampleComponent2_1"
                 rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent2:1.0.0"/>
+            <rts:WaitTime rts:waitTime="500"/>
         </rts:targets>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="3">
-            <rts:WaitTime rts:waitTime="750"/>
             <rts:TargetComponent rts:id="Comp3Ec1"
                 rts:instanceName="SampleComponent3_1"
                 rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent3:0.5.0"/>
+            <rts:WaitTime rts:waitTime="750"/>
         </rts:targets>
     </rts:StartUp>
     <rts:ShutDown>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="1">
-            <rts:WaitTime rts:waitTime="300"/>
             <rts:TargetComponent rts:id="Comp3Ec1"
                 rts:instanceName="SampleComponent3_1"
                 rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent3:0.5.0"/>
+            <rts:WaitTime rts:waitTime="300"/>
         </rts:targets>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="2">
+            <rts:TargetComponent rts:id="Comp2Ec1"
+                rts:instanceName="SampleComponent2_1"
+                rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent2:1.0.0"/>
             <rts:Preceding rts:sendingTiming="SYNC" rts:timeout="100">
                 <rts:PrecedingComponents rts:id="Comp3Ec1"
                     rts:instanceName="SampleComponent3_1"
                     rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent3:0.5.0"/>
             </rts:Preceding>
-            <rts:TargetComponent rts:id="Comp2Ec1"
-                rts:instanceName="SampleComponent2_1"
-                rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent2:1.0.0"/>
         </rts:targets>
         <rts:targets xsi:type="rtsExt:condition_ext" rts:sequence="3">
+            <rts:TargetComponent rts:id="Comp1Ec1"
+                rts:instanceName="SampleComponent_1"
+                rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent:1.0.0"/>
             <rts:Preceding rts:sendingTiming="SYNC" rts:timeout="100">
                 <rts:PrecedingComponents rts:id="Comp3Ec1"
                     rts:instanceName="SampleComponent3_1"
@@ -139,9 +142,6 @@
                     rts:instanceName="SampleComponent2_1"
                     rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent2:1.0.0"/>
             </rts:Preceding>
-            <rts:TargetComponent rts:id="Comp1Ec1"
-                rts:instanceName="SampleComponent_1"
-                rts:componentId="RTC:SampleVendor:SampleCategory:SampleComponent:1.0.0"/>
         </rts:targets>
     </rts:ShutDown>
 </rts:RtsProfile>
