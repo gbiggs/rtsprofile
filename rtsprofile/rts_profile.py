@@ -844,7 +844,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 {minute:02}:{second:02}'.format(**root['creationDate'])
         self.update_date = '{year:04}-{month:02}-{day:02}T{hour:02}:\
 {minute:02}:{second:02}'.format(**root['updateDate'])
-        self.version = root['version']
+        self.version = str(root['version'])
         if RTS_EXT_NS_YAML + 'comment' in root:
             self.comment = root[RTS_EXT_NS_YAML + 'comment']
         # Parse the children
