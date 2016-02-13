@@ -50,7 +50,7 @@ from rtsprofile.utils import date_to_dict, get_direct_child_elements_xml, \
 ##############################################################################
 ## RtsProfile object
 
-class RtsProfile:
+class RtsProfile(object):
     def __init__(self, xml_spec=None, yaml_spec=None):
         '''Constructor.
 
