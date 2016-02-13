@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.participant import Participant
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
@@ -198,6 +198,7 @@ class ExecutionContext(object):
 
     def save_xml(self, doc, element):
         '''Save this execution context into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:execution_context_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'kind', self.kind)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'rate', str(self.rate))

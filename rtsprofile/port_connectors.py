@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.exceptions import InvalidDataPortConnectorNodeError, \
                                   InvalidServicePortConnectorNodeError
 from rtsprofile.targets import TargetPort
@@ -364,11 +364,12 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
         else:
             self.comment = ''
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y[RTS_EXT_NS_YAML + 'visible']
-            if visible == 'true' or visible == '1':
+            if visible == True or visible == 'true' or visible == '1':
                 self.visible = True
+            else:
+                self.visible = False
         if not 'sourceDataPort' in y:
             raise InvalidDataPortConnectorNodeError
         self.source_data_port = \
@@ -388,6 +389,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     def save_xml(self, doc, element):
         '''Save this data port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:dataport_connector_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'connectorId',
                                self.connector_id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
@@ -399,13 +401,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         if self.subscription_type:
             element.setAttributeNS(RTS_NS, RTS_NS_S + 'subscriptionType',
                                    self.subscription_type)
-        element.setAttributeNS(RTS_NS, RTS_NS_S + 'pushInterval',
-                               str(self.push_interval))
+        if self.push_interval != 0.0:
+            element.setAttributeNS(RTS_NS, RTS_NS_S + 'pushInterval',
+                                   str(self.push_interval))
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
                                    self.comment)
-        element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
-                               str(self.visible).lower())
+        if self.visible != True:
+            element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
+                                   str(self.visible).lower())
         new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'sourceDataPort')
         self.source_data_port.save_xml(doc, new_element)
         element.appendChild(new_element)
@@ -425,9 +429,10 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
                 'dataType': self.data_type,
                 'interfaceType': self.interface_type,
                 'dataflowType': self.data_flow_type,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
                 'sourceDataPort': self.source_data_port.to_dict(),
                 'targetDataPort': self.target_data_port.to_dict()}
+        if self.visible != True:
+            d[RTS_EXT_NS_YAML + 'visible'] = self.visible
         if self.subscription_type:
             d['subscriptionType'] = self.subscription_type
         if self.push_interval:
@@ -677,11 +682,12 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
         else:
             self.comment = ''
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y[RTS_EXT_NS_YAML + 'visible']
-            if visible == 'true' or visible == '1':
+            if visible == True or visible == 'true' or visible == '1':
                 self.visible = True
+            else:
+                self.visible = False
         if 'sourceServicePort' not in y:
             raise InvalidServicePortConnectorNodeError
         self.source_service_port = \
@@ -701,6 +707,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     def save_xml(self, doc, element):
         '''Save this service port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:serviceport_connector_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'connectorId',
                                self.connector_id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
@@ -710,8 +717,9 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
                                    self.comment)
-        element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
-                               str(self.visible).lower())
+        if self.visible != True:
+            element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
+                                   str(self.visible).lower())
         new_element = doc.createElementNS(RTS_NS,
                                           RTS_NS_S + 'sourceServicePort')
         self.source_service_port.save_xml(doc, new_element)
@@ -730,9 +738,10 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
         '''Save this service port connector into a dictionary.'''
         d = {'connectorId': self.connector_id,
                 'name': self.name,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
                 'sourceServicePort': self.source_service_port.to_dict(),
                 'targetServicePort': self.target_service_port.to_dict()}
+        if self.visible != True:
+            d[RTS_EXT_NS_YAML + 'visible'] = self.visible
         if self.trans_method:
             d['transMethod'] = self.trans_method
         if self.comment:

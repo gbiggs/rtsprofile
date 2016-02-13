@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              parse_properties_xml, validate_attribute, \
                              string_types, properties_to_xml
@@ -165,11 +165,12 @@ class DataPort(object):
         self.name = y['name']
         if RTS_EXT_NS_YAML + 'comment' in y:
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y.get(RTS_EXT_NS_YAML + 'visible')
             if visible == True or visible == 'true' or visible == 'True':
                 self.visible = True
+            else:
+                self.visible = False
         if RTS_EXT_NS_YAML + 'properties' in y:
             for p in y.get(RTS_EXT_NS_YAML + 'properties'):
                 if 'value' in p:
@@ -181,6 +182,7 @@ class DataPort(object):
 
     def save_xml(self, doc, element):
         '''Save this data port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:dataport_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
@@ -196,7 +198,7 @@ class DataPort(object):
     def to_dict(self):
         '''Save this data port into a dictionary.'''
         d = {'name': self.name,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
+                RTS_EXT_NS_YAML + 'visible': self.visible}
         if self.comment:
             d[RTS_EXT_NS_YAML + 'comment'] = self.comment
         props = []
@@ -345,11 +347,12 @@ class ServicePort(object):
         self.name = y['name']
         if RTS_EXT_NS_YAML + 'comment' in y:
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y.get(RTS_EXT_NS_YAML + 'visible')
             if visible == True or visible == 'true' or visible == 'True':
                 self.visible = True
+            else:
+                self.visible = False
         if RTS_EXT_NS_YAML + 'properties' in y:
             for p in y.get(RTS_EXT_NS_YAML + 'properties'):
                 if 'value' in p:
@@ -361,12 +364,14 @@ class ServicePort(object):
 
     def save_xml(self, doc, element):
         '''Save this service port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:serviceport_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
                                    self.comment)
-        element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
-                               str(self.visible).lower())
+        if self.visible != True:
+            element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
+                                   str(self.visible).lower())
         for p in self.properties:
             new_prop_element = doc.createElementNS(RTS_EXT_NS,
                                                    RTS_EXT_NS_S + 'Properties')
@@ -375,8 +380,9 @@ class ServicePort(object):
 
     def to_dict(self):
         '''Save this service port into a dictionary.'''
-        d = {'name': self.name,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
+        d = {'name': self.name}
+        if self.visible != True:
+            d[RTS_EXT_NS_YAML + 'visible'] = self.visible
         if self.comment:
             d[RTS_EXT_NS_YAML + 'comment'] = self.comment
         props = []

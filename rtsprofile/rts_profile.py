@@ -32,7 +32,7 @@ import xml.dom.minidom
 import yaml
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.component import Component
 from rtsprofile.component_group import ComponentGroup
 from rtsprofile.exceptions import MultipleSourcesError, \
@@ -719,11 +719,14 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Example:
         >>> input = xml.dom.minidom.parse(open('test/rtsystem.xml')).toprettyxml(indent='    ')
+        >>> input = '\\n'.join([l for l in input.split('\\n') if l.strip() != ''])
         >>> s = RtsProfile(xml_spec=input)
         >>> output = s.save_to_xml()
+        >>> open('/tmp/rtsystem-input.xml', 'w').write(input)
+        >>> open('/tmp/rtsystem-output.xml', 'w').write(output)
         >>> import difflib
-        >>> list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))
-        []
+        >>> print('\\n'.join(list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))))
+        <BLANKLINE>
         '''
         xml_obj = self._to_xml_dom()
         return xml_obj.toprettyxml(indent='    ')
@@ -757,8 +760,8 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.parse_from_yaml(input)
         >>> output = s.save_to_yaml()
         >>> import difflib
-        >>> list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))
-        []
+        >>> print('\\n'.join(list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))))
+        <BLANKLINE>
         '''
         return self._to_yaml()
 
@@ -983,8 +986,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         doc = impl.createDocument(RTS_NS, RTS_NS_S + 'RtsProfile', None)
         doc.documentElement.setAttribute('xmlns:rts', RTS_NS)
         doc.documentElement.setAttribute('xmlns:rtsExt', RTS_EXT_NS)
-        doc.documentElement.setAttribute('xmlns:xsi',
-                'http://www.w3.org/2001/XMLSchema-instance')
+        doc.documentElement.setAttribute('xmlns:xsi', XSI_NS)
 
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'abstract',

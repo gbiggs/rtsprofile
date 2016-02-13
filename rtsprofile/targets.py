@@ -25,7 +25,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              parse_properties_xml, properties_to_xml, \
                              validate_attribute, string_types
@@ -226,6 +226,7 @@ class TargetPort(TargetComponent):
     def save_xml(self, doc, element):
         '''Save this target port into an xml.dom.Element object.'''
         super(TargetPort, self).save_xml(doc, element)
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:target_port_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'portName', self.port_name)
 
     def to_dict(self):

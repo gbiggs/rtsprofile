@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile import composite_type as comp_type
 from rtsprofile.config_set import ConfigurationSet
 from rtsprofile.exceptions import InvalidCompositeTypeError
@@ -599,6 +599,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
     def save_xml(self, doc, element):
         '''Save this component into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:component_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'pathUri', self.path_uri)
         if self.active_configuration_set:
@@ -664,7 +665,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         self.instance_name = y['instanceName']
         self.compositeType = comp_type.from_string(y['compositeType'])
         required = y['isRequired']
-        if required == 'true' or required == '1':
+        if required == True or required == 'true' or required == '1':
             self.is_required = True
         else:
             self.is_required = False
@@ -712,8 +713,8 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
                 'pathUri': self.path_uri,
                 'instanceName': self.instance_name,
                 'compositeType': comp_type.to_string(self.composite_type),
-                'isRequired': str(self.is_required).lower(),
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
+                'isRequired': self.is_required,
+                RTS_EXT_NS_YAML + 'visible': self.visible}
         if self.active_configuration_set:
             d['activeConfigurationSet'] = self.active_configuration_set
         if self.comment:
