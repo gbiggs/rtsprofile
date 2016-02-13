@@ -377,7 +377,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.startup = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.StartUp', <type 'int'>, <type 'StartUp'>)
+        InvalidTypeError: ('rts_profile.StartUp', <type 'int'>, <class 'rtsprofile.message_sending.StartUp'>)
         '''
         return self._startup
 
@@ -400,7 +400,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.shutdown = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.ShutDown', <type 'int'>, <type 'ShutDown'>)
+        InvalidTypeError: ('rts_profile.ShutDown', <type 'int'>, <class 'rtsprofile.message_sending.ShutDown'>)
         '''
         return self._shutdown
 
@@ -423,7 +423,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.activation = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.Activation', <type 'int'>, <type 'Activation'>)
+        InvalidTypeError: ('rts_profile.Activation', <type 'int'>, <class 'rtsprofile.message_sending.Activation'>)
         '''
         return self._activation
 
@@ -446,7 +446,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.deactivation = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.Deactivation', <type 'int'>, <type 'Deactivation'>)
+        InvalidTypeError: ('rts_profile.Deactivation', <type 'int'>, <class 'rtsprofile.message_sending.Deactivation'>)
         '''
         return self._deactivation
 
@@ -469,7 +469,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.resetting = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.Resetting', <type 'int'>, <type 'Resetting'>)
+        InvalidTypeError: ('rts_profile.Resetting', <type 'int'>, <class 'rtsprofile.message_sending.Resetting'>)
         '''
         return self._resetting
 
@@ -492,7 +492,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.initializing = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.Initializing', <type 'int'>, <type 'Initialize'>)
+        InvalidTypeError: ('rts_profile.Initializing', <type 'int'>, <class 'rtsprofile.message_sending.Initialize'>)
         '''
         return self._initializing
 
@@ -515,7 +515,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         >>> s.finalizing = 1
         Traceback (most recent call last):
         ...
-        InvalidTypeError: ('rts_profile.Finalizing', <type 'int'>, <type 'Finalize'>)
+        InvalidTypeError: ('rts_profile.Finalizing', <type 'int'>, <class 'rtsprofile.message_sending.Finalize'>)
         '''
         return self._finalizing
 
