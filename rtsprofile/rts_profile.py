@@ -286,7 +286,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @components.setter
     def components(self, components):
         validate_attribute(components, 'rts_profile.Components',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._components = components
 
     @property
@@ -311,7 +311,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     @groups.setter
     def groups(self, groups):
         validate_attribute(groups, 'rts_profile.Groups',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._groups = groups
 
     @property
@@ -336,7 +336,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     def data_port_connectors(self, data_port_connectors):
         validate_attribute(data_port_connectors,
                            'rts_profile.DataPortConnectors',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._data_port_connectors = data_port_connectors
 
     @property
@@ -361,7 +361,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     def service_port_connectors(self, service_port_connectors):
         validate_attribute(service_port_connectors,
                            'rts_profile.ServicePortConnectors',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._service_port_connectors = service_port_connectors
 
     @property
