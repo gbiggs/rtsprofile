@@ -59,7 +59,18 @@ class ComponentGroup(object):
 
     @property
     def group_id(self):
-        '''The ID used to distinguish this group in the RT system.'''
+        '''The ID used to distinguish this group in the RT system.
+
+        Example:
+        >>> g = ComponentGroup()
+        >>> g.group_id = "test"
+
+        Invalid assignment should throw exception:
+        >>> g.group_id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component_group.groupID', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._group_id
 
     @group_id.setter
@@ -74,6 +85,20 @@ class ComponentGroup(object):
 
         At least one must be present.
 
+        Example:
+        >>> import rtsprofile.component
+        >>> g = ComponentGroup()
+        >>> g.members = [rtsprofile.component.Component()]
+
+        Invalid assignment should throw exception:
+        >>> g.members = []
+        Traceback (most recent call last):
+        ...
+        RequiredAttributeError: component_group.Members
+        >>> g.members = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component_group.Members', <type 'int'>, <type 'list'>)
         '''
         return self._members
 
