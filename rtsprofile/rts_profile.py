@@ -631,6 +631,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.optional_data_connections())
+        0
         '''
         result = []
         for conn in self._data_port_connectors:
@@ -648,6 +652,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.optional_service_connections())
+        0
         '''
         result = []
         for conn in self._service_port_connectors:
@@ -664,6 +672,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.required_data_connections())
+        2
         '''
         result = []
         for conn in self._data_port_connectors:
@@ -680,6 +692,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.required_service_connections())
+        1
         '''
         result = []
         for conn in self._service_port_connectors:
