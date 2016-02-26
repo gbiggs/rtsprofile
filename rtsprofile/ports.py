@@ -78,6 +78,15 @@ class DataPort(object):
 
         This name is used in connector profiles to identify the port.
 
+        Example:
+        >>> p = DataPort()
+        >>> p.name = "test"
+
+        Invalid assignment should throw exception:
+        >>> p.name = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataPort.name', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._name
 
@@ -96,6 +105,15 @@ class DataPort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = DataPort()
+        >>> p.comment = "test"
+
+        Invalid assignment should throw exception:
+        >>> p.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataPort.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -114,6 +132,15 @@ class DataPort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = DataPort()
+        >>> p.visible = True
+
+        Invalid assignment should throw exception:
+        >>> p.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataPort.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -131,13 +158,22 @@ class DataPort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = DataPort()
+        >>> p.properties = {"key": "value"}
+
+        Invalid assignment should throw exception:
+        >>> p.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataPort.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
     @properties.setter
     def properties(self, properties):
         validate_attribute(properties, 'dataPort.ext.Properties',
-                           expected_type=list, required=False)
+                           expected_type=dict, required=False)
         self._properties = properties
 
     def parse_xml_node(self, node):
@@ -260,6 +296,15 @@ class ServicePort(object):
 
         This name is used in connector profiles to identify the port.
 
+        Example:
+        >>> p = ServicePort()
+        >>> p.name = "test"
+
+        Invalid assignment should throw exception:
+        >>> p.name = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport.name', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._name
 
@@ -278,6 +323,15 @@ class ServicePort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = ServicePort()
+        >>> p.comment = "test"
+
+        Invalid assignment should throw exception:
+        >>> p.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -296,6 +350,15 @@ class ServicePort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = ServicePort()
+        >>> p.visible = True
+
+        Invalid assignment should throw exception:
+        >>> p.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -313,13 +376,22 @@ class ServicePort(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> p = ServicePort()
+        >>> p.properties = {"key": "value"}
+
+        Invalid assignment should throw exception:
+        >>> p.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
     @properties.setter
     def properties(self, properties):
         validate_attribute(properties, 'serviceport.ext.Properties',
-                           expected_type=list, required=False)
+                           expected_type=dict, required=False)
         self._properties = properties
 
     def parse_xml_node(self, node):
