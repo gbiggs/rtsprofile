@@ -32,7 +32,7 @@ import xml.dom.minidom
 import yaml
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.component import Component
 from rtsprofile.component_group import ComponentGroup
 from rtsprofile.exceptions import MultipleSourcesError, \
@@ -50,7 +50,7 @@ from rtsprofile.utils import date_to_dict, get_direct_child_elements_xml, \
 ##############################################################################
 ## RtsProfile object
 
-class RtsProfile:
+class RtsProfile(object):
     def __init__(self, xml_spec=None, yaml_spec=None):
         '''Constructor.
 
@@ -68,6 +68,20 @@ class RtsProfile:
         specification of the RTS Profile. If present, the other arguments must
         be None.
 
+        Example:
+        >>> s = RtsProfile()
+
+        Initialize from xml string:
+        >>> input = open('test/rtsystem.xml').read()
+        >>> s = RtsProfile(xml_spec=input)
+
+        Initialize from yaml string:
+        >>> input = open('test/rtsystem.yaml').read()
+        >>> s = RtsProfile(yaml_spec=input)
+
+        Get system summary as string:
+        >>> str(s).find('ID:') != -1
+        True
         '''
         if xml_spec:
             if yaml_spec:
@@ -138,6 +152,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Typically in the format '[vendor name].[system name].[version]'.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.id = "aist.rtsprofile.1"
+
+        Invalid assignment should throw exception:
+        >>> s.id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.id', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._id
 
@@ -153,6 +176,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         May be empty.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.abstract = "test description"
+
+        Invalid assignment should throw exception:
+        >>> s.abstract = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.abstract', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._abstract
 
@@ -168,6 +200,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Usually set automatically by the tool that created the system.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.creation_date = "2016/01/01"
+
+        Invalid assignment should throw exception:
+        >>> s.creation_date = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.creationDate', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._creation_date
 
@@ -183,6 +224,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Usually set automatically by the tool that created the system.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.update_date = "2016/01/01"
+
+        Invalid assignment should throw exception:
+        >>> s.update_date = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.updateDate', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._update_date
 
@@ -194,7 +244,18 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def version(self):
-        '''Version of the RTSProfile specification this is in.'''
+        '''Version of the RTSProfile specification this is in.
+
+        Example:
+        >>> s = RtsProfile()
+        >>> s.version = "1.0.0"
+
+        Invalid assignment should throw exception:
+        >>> s.version = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.version', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._version
 
     @version.setter
@@ -210,13 +271,22 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         May be an empty list if there are no components. Members are of type
         @ref Component.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.components = []
+
+        Invalid assignment should throw exception:
+        >>> s.components = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Components', <type 'int'>, <type 'list'>)
         '''
         return self._components
 
     @components.setter
     def components(self, components):
         validate_attribute(components, 'rts_profile.Components',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._components = components
 
     @property
@@ -226,13 +296,22 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         May be an empty list if there are no groups. Members are of type @ref
         ComponentGroup.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.groups = []
+
+        Invalid assignment should throw exception:
+        >>> s.groups = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Groups', <type 'int'>, <type 'list'>)
         '''
         return self._groups
 
     @groups.setter
     def groups(self, groups):
         validate_attribute(groups, 'rts_profile.Groups',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._groups = groups
 
     @property
@@ -241,6 +320,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Members are of type @ref DataPortConnector.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.data_port_connectors = []
+
+        Invalid assignment should throw exception:
+        >>> s.data_port_connectors = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.DataPortConnectors', <type 'int'>, <type 'list'>)
         '''
         return self._data_port_connectors
 
@@ -248,7 +336,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     def data_port_connectors(self, data_port_connectors):
         validate_attribute(data_port_connectors,
                            'rts_profile.DataPortConnectors',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._data_port_connectors = data_port_connectors
 
     @property
@@ -257,6 +345,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Members are of type @ref ServicePortConnector.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.service_port_connectors = []
+
+        Invalid assignment should throw exception:
+        >>> s.service_port_connectors = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.ServicePortConnectors', <type 'int'>, <type 'list'>)
         '''
         return self._service_port_connectors
 
@@ -264,12 +361,24 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     def service_port_connectors(self, service_port_connectors):
         validate_attribute(service_port_connectors,
                            'rts_profile.ServicePortConnectors',
-                           expected_type=list, required=True)
+                           expected_type=list, required=False)
         self._service_port_connectors = service_port_connectors
 
     @property
     def startup(self):
-        '''Ordering and conditions for when the RT system is started.'''
+        '''Ordering and conditions for when the RT system is started.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.startup = message_sending.StartUp()
+
+        Invalid assignment should throw exception:
+        >>> s.startup = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.StartUp', <type 'int'>, <class 'rtsprofile.message_sending.StartUp'>)
+        '''
         return self._startup
 
     @startup.setter
@@ -280,7 +389,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def shutdown(self):
-        '''Ordering and conditions for when the RT system is shut down.'''
+        '''Ordering and conditions for when the RT system is shut down.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.shutdown = message_sending.ShutDown()
+
+        Invalid assignment should throw exception:
+        >>> s.shutdown = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.ShutDown', <type 'int'>, <class 'rtsprofile.message_sending.ShutDown'>)
+        '''
         return self._shutdown
 
     @shutdown.setter
@@ -291,7 +412,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def activation(self):
-        '''Ordering and conditions for when the RT system is activated.'''
+        '''Ordering and conditions for when the RT system is activated.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.activation = message_sending.Activation()
+
+        Invalid assignment should throw exception:
+        >>> s.activation = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Activation', <type 'int'>, <class 'rtsprofile.message_sending.Activation'>)
+        '''
         return self._activation
 
     @activation.setter
@@ -302,7 +435,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def deactivation(self):
-        '''Ordering and conditions for when the RT system is deactivated.'''
+        '''Ordering and conditions for when the RT system is deactivated.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.deactivation = message_sending.Deactivation()
+
+        Invalid assignment should throw exception:
+        >>> s.deactivation = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Deactivation', <type 'int'>, <class 'rtsprofile.message_sending.Deactivation'>)
+        '''
         return self._deactivation
 
     @deactivation.setter
@@ -313,7 +458,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def resetting(self):
-        '''Ordering and conditions for when the RT system is reset.'''
+        '''Ordering and conditions for when the RT system is reset.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.resetting = message_sending.Resetting()
+
+        Invalid assignment should throw exception:
+        >>> s.resetting = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Resetting', <type 'int'>, <class 'rtsprofile.message_sending.Resetting'>)
+        '''
         return self._resetting
 
     @resetting.setter
@@ -324,7 +481,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def initializing(self):
-        '''Ordering and conditions for when the RT system is initialised.'''
+        '''Ordering and conditions for when the RT system is initialized.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.initializing = message_sending.Initialize()
+
+        Invalid assignment should throw exception:
+        >>> s.initializing = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Initializing', <type 'int'>, <class 'rtsprofile.message_sending.Initialize'>)
+        '''
         return self._initializing
 
     @initializing.setter
@@ -335,7 +504,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
     @property
     def finalizing(self):
-        '''Ordering and conditions for when the RT system is finalised.'''
+        '''Ordering and conditions for when the RT system is finalized.
+
+        Example:
+        >>> import message_sending
+        >>> s = RtsProfile()
+        >>> s.finalizing = message_sending.Finalize()
+
+        Invalid assignment should throw exception:
+        >>> s.finalizing = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rts_profile.Finalizing', <type 'int'>, <class 'rtsprofile.message_sending.Finalize'>)
+        '''
         return self._finalizing
 
     @finalizing.setter
@@ -353,6 +534,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Part of the extended profile.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.comment = "test comment"
+
+        Invalid assignment should throw exception:
+        >>> s.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rtsprofile.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -371,6 +561,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Part of the extended profile.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.version_up_log = ["test version_up_log"]
+
+        Invalid assignment should throw exception:
+        >>> s.version_up_log = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rtsprofile.ext.VersionUpLog', <type 'int'>, <type 'list'>)
         '''
         return self._version_up_log
 
@@ -388,6 +587,15 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 
         Part of the extended profile.
 
+        Example:
+        >>> s = RtsProfile()
+        >>> s.properties = {'key':'value'}
+
+        Invalid assignment should throw exception:
+        >>> s.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('rtsprofile.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -423,6 +631,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.optional_data_connections())
+        0
         '''
         result = []
         for conn in self._data_port_connectors:
@@ -440,6 +652,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.optional_service_connections())
+        0
         '''
         result = []
         for conn in self._service_port_connectors:
@@ -456,6 +672,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.required_data_connections())
+        2
         '''
         result = []
         for conn in self._data_port_connectors:
@@ -472,6 +692,10 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         connection is also required. If one or more are not required, that
         connection is optional.
 
+        Example:
+        >>> s = RtsProfile(xml_spec=open('test/rtsystem.xml').read())
+        >>> len(s.required_service_connections())
+        1
         '''
         result = []
         for conn in self._service_port_connectors:
@@ -485,7 +709,20 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     # XML
 
     def parse_from_xml(self, xml_spec):
-        '''Parse a string or file containing an XML specification.'''
+        '''Parse a string or file containing an XML specification.
+
+        Example:
+        >>> s = RtsProfile()
+        >>> s.parse_from_xml(open('test/rtsystem.xml'))
+        >>> len(s.components)
+        3
+
+        Load of invalid data should throw exception:
+        >>> s.parse_from_xml('non-XML string')
+        Traceback (most recent call last):
+        ...
+        ExpatError: syntax error: line 1, column 0
+        '''
         if type(xml_spec) in string_types():
             dom = xml.dom.minidom.parseString(xml_spec)
         else:
@@ -494,7 +731,19 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         dom.unlink()
 
     def save_to_xml(self):
-        '''Save this RtsProfile into an XML-formatted string.'''
+        '''Save this RtsProfile into an XML-formatted string.
+
+        Example:
+        >>> input = xml.dom.minidom.parse(open('test/rtsystem.xml')).toprettyxml(indent='    ')
+        >>> input = '\\n'.join([l for l in input.split('\\n') if l.strip() != ''])
+        >>> s = RtsProfile(xml_spec=input)
+        >>> output = s.save_to_xml()
+        >>> open('/tmp/rtsystem-input.xml', 'w').write(input)
+        >>> open('/tmp/rtsystem-output.xml', 'w').write(output)
+        >>> import difflib
+        >>> print('\\n'.join(list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))))
+        <BLANKLINE>
+        '''
         xml_obj = self._to_xml_dom()
         return xml_obj.toprettyxml(indent='    ')
 
@@ -502,11 +751,34 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
     # YAML
 
     def parse_from_yaml(self, yaml_spec):
-        '''Parse a string or file containing a YAML specification.'''
+        '''Parse a string or file containing a YAML specification.
+
+        Example:
+        >>> s = RtsProfile()
+        >>> s.parse_from_yaml(open('test/rtsystem.yaml'))
+        >>> len(s.components)
+        3
+
+        Load of invalid data should throw exception:
+        >>> s.parse_from_yaml('non-YAML string')
+        Traceback (most recent call last):
+        ...
+        RtsProfileError: Missing root node.
+        '''
         self._parse_yaml(yaml.safe_load(yaml_spec))
 
     def save_to_yaml(self):
-        '''Save this RtsProfile into a YAML-formatted string.'''
+        '''Save this RtsProfile into a YAML-formatted string.
+
+        Example:
+        >>> input = yaml.safe_dump(yaml.safe_load(open('test/rtsystem.yaml')))
+        >>> s = RtsProfile()
+        >>> s.parse_from_yaml(input)
+        >>> output = s.save_to_yaml()
+        >>> import difflib
+        >>> print('\\n'.join(list(difflib.unified_diff(input.splitlines(), output.splitlines(), 'input', 'output'))))
+        <BLANKLINE>
+        '''
         return self._to_yaml()
 
     ###########################################################################
@@ -591,7 +863,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
 {minute:02}:{second:02}'.format(**root['creationDate'])
         self.update_date = '{year:04}-{month:02}-{day:02}T{hour:02}:\
 {minute:02}:{second:02}'.format(**root['updateDate'])
-        self.version = root['version']
+        self.version = str(root['version'])
         if RTS_EXT_NS_YAML + 'comment' in root:
             self.comment = root[RTS_EXT_NS_YAML + 'comment']
         # Parse the children
@@ -730,8 +1002,7 @@ Update date: {3}\nVersion: {4}\n'.format(self.id, self.abstract,
         doc = impl.createDocument(RTS_NS, RTS_NS_S + 'RtsProfile', None)
         doc.documentElement.setAttribute('xmlns:rts', RTS_NS)
         doc.documentElement.setAttribute('xmlns:rtsExt', RTS_EXT_NS)
-        doc.documentElement.setAttribute('xmlns:xsi',
-                'http://www.w3.org/2001/XMLSchema-instance')
+        doc.documentElement.setAttribute('xmlns:xsi', XSI_NS)
 
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         doc.documentElement.setAttributeNS(RTS_NS, RTS_NS_S + 'abstract',

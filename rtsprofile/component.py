@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile import composite_type as comp_type
 from rtsprofile.config_set import ConfigurationSet
 from rtsprofile.exceptions import InvalidCompositeTypeError
@@ -145,6 +145,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         multiple RT Components within a single RT system, this ID is prepended
         to the instance name attribute to distinguish individual components.
 
+        Example:
+        >>> c = Component()
+        >>> c.id = "test0.rtc"
+
+        Invalid assignment should throw exception:
+        >>> c.id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.id', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._id
 
@@ -156,7 +165,18 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
     @property
     def path_uri(self):
-        '''Path to where this component is registered in URI format.'''
+        '''Path to where this component is registered in URI format.
+
+        Example:
+        >>> c = Component()
+        >>> c.path_uri = "file://tmp"
+
+        Invalid assignment should throw exception:
+        >>> c.path_uri = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.pathUri', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._path_uri
 
     @path_uri.setter
@@ -171,6 +191,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         If no configuration set is active, this may be empty.
 
+        Example:
+        >>> c = Component()
+        >>> c.active_configuration_set = "config1"
+
+        Invalid assignment should throw exception:
+        >>> c.active_configuration_set = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.activeConfigurationSet', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._active_config_set
 
@@ -189,6 +218,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         multiple RT Components within a single RT system, this instance name is
         appended to the ID attribute to distinguish individual components.
 
+        Example:
+        >>> c = Component()
+        >>> c.instance_name = "test0.rtc"
+
+        Invalid assignment should throw exception:
+        >>> c.instance_name = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.instanceName', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._instance_name
 
@@ -206,6 +244,16 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         specifies the type of composition. See @ref CompositeType for valid
         values.
 
+        Example:
+        >>> import composite_type
+        >>> c = Component()
+        >>> c.composite_type = composite_type.PERIODIC_EC_SHARED
+
+        Invalid assignment should throw exception:
+        >>> c.composite_type = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.compositeType', <type 'int'>, <type 'str'>)
         '''
         return self._composite_type
 
@@ -223,6 +271,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         function. If this component must be present for the RT system to
         function, this attribute will be True.
 
+        Example:
+        >>> c = Component()
+        >>> c.is_required = True
+
+        Invalid assignment should throw exception:
+        >>> c.is_required = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.isRequired', <type 'int'>, <type 'bool'>)
         '''
         return self._is_required
 
@@ -239,6 +296,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         May be an empty list if this component has no data ports. Members are
         of type @ref DataPort.
 
+        Example:
+        >>> c = Component()
+        >>> c.data_ports = []
+
+        Invalid assignment should throw exception:
+        >>> c.data_ports = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.DataPorts', <type 'int'>, <type 'list'>)
         '''
         return self._data_ports
 
@@ -255,6 +321,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         May be an empty list if this component has no service ports. Members
         are of type @ref ServicePort.
 
+        Example:
+        >>> c = Component()
+        >>> c.service_ports = []
+
+        Invalid assignment should throw exception:
+        >>> c.service_ports = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ServicePorts', <type 'int'>, <type 'list'>)
         '''
         return self._service_ports
 
@@ -271,6 +346,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         May be an empty list if this component has no configuration sets.
         Members are of type @ref ConfigurationSet.
 
+        Example:
+        >>> c = Component()
+        >>> c.configuration_sets = []
+
+        Invalid assignment should throw exception:
+        >>> c.configuration_sets = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ConfigurationSets', <type 'int'>, <type 'list'>)
         '''
         return self._config_sets
 
@@ -287,6 +371,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         May be an empty list if this component does not own any contexts.
         Members are of type @ref ExecutionContext.
 
+        Example:
+        >>> c = Component()
+        >>> c.execution_contexts = []
+
+        Invalid assignment should throw exception:
+        >>> c.execution_contexts = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ExecutionContexts', <type 'int'>, <type 'list'>)
         '''
         return self._exec_contexts
 
@@ -303,6 +396,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Members are of type @ref Participant.
 
+        Example:
+        >>> c = Component()
+        >>> c.participants = []
+
+        Invalid assignment should throw exception:
+        >>> c.participants = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.Participants', <type 'int'>, <type 'list'>)
         '''
         return self._participants
 
@@ -321,6 +423,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.comment = "test comment"
+
+        Invalid assignment should throw exception:
+        >>> c.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -339,6 +450,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.visible = True
+
+        Invalid assignment should throw exception:
+        >>> c.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -354,6 +474,20 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> import direction
+        >>> c = Component()
+        >>> l = Location()
+        >>> l.direction = direction.LEFT
+        >>> c.location = l
+        >>> c.location.direction
+        'LEFT'
+
+        Invalid assignment should throw exception:
+        >>> c.location = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.Location', <type 'int'>, <class 'rtsprofile.location.Location'>)
         '''
         return self._location
 
@@ -371,6 +505,15 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = Component()
+        >>> c.properties = {'key':'value'}
+
+        Invalid assignment should throw exception:
+        >>> c.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('component.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -403,6 +546,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         '''Parse an xml.dom Node object representing a component into this
         object.
 
+        >>> c = Component()
         '''
         self._reset()
         # Get the attributes
@@ -455,6 +599,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
 
     def save_xml(self, doc, element):
         '''Save this component into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:component_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'pathUri', self.path_uri)
         if self.active_configuration_set:
@@ -520,7 +665,7 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
         self.instance_name = y['instanceName']
         self.compositeType = comp_type.from_string(y['compositeType'])
         required = y['isRequired']
-        if required == 'true' or required == '1':
+        if required == True or required == 'true' or required == '1':
             self.is_required = True
         else:
             self.is_required = False
@@ -568,8 +713,8 @@ configuration set: {2}\n  Composite type: {4}\n  Is required: {5}\n'.format(\
                 'pathUri': self.path_uri,
                 'instanceName': self.instance_name,
                 'compositeType': comp_type.to_string(self.composite_type),
-                'isRequired': str(self.is_required).lower(),
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower()}
+                'isRequired': self.is_required,
+                RTS_EXT_NS_YAML + 'visible': self.visible}
         if self.active_configuration_set:
             d['activeConfigurationSet'] = self.active_configuration_set
         if self.comment:

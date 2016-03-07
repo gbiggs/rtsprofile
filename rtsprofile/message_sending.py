@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.exceptions import InvalidParticipantNodeError
 from rtsprofile.targets import TargetExecutionContext
 from rtsprofile.utils import get_direct_child_elements_xml, \
@@ -105,6 +105,7 @@ class MessageSending(object):
         '''Save this message_sending object into an xml.dom.Element object.'''
         for cond in self._targets:
             new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'targets')
+            new_element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:condition_ext')
             cond.save_xml(doc, new_element)
             element.appendChild(new_element)
 

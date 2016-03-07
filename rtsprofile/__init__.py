@@ -31,7 +31,8 @@ RTS_NS_S = 'rts:'
 RTS_EXT_NS = 'http://www.openrtp.org/namespaces/rts_ext'
 RTS_EXT_NS_S = 'rtsExt:'
 RTS_EXT_NS_YAML = 'rtsExt::'
-
+XSI_NS = 'http://www.w3.org/2001/XMLSchema-instance'
+XSI_NS_S = 'xsi:'
 
 # vim: tw=79
 

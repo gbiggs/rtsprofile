@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.exceptions import InvalidDataPortConnectorNodeError, \
                                   InvalidServicePortConnectorNodeError
 from rtsprofile.targets import TargetPort
@@ -127,7 +127,18 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     @property
     def connector_id(self):
-        '''The ID of the connector used to distinguish it in the RT system.'''
+        '''The ID of the connector used to distinguish it in the RT system.
+
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.connector_id = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.connector_id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.connectorID', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._connector_id
 
     @connector_id.setter
@@ -138,7 +149,18 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     @property
     def name(self):
-        '''The name of the connector.'''
+        '''The name of the connector.
+        
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.name = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.name = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.name', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._name
 
     @name.setter
@@ -149,7 +171,18 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     @property
     def data_type(self):
-        '''Data type that this connector transports.'''
+        '''Data type that this connector transports.
+
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.data_type = "MyData"
+
+        Invalid assignment should throw exception:
+        >>> c.data_type = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.dataType', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._data_type
 
     @data_type.setter
@@ -165,6 +198,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         As specified when the RT system is created. Dependent on what the RT
         Middleware used to execute the RT system supports.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.interface_type = "corba"
+
+        Invalid assignment should throw exception:
+        >>> c.interface_type = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.interfaceType', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._interface_type
 
@@ -181,6 +223,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         As specified when the RT system is created. Dependent on what the RT
         Middleware used to execute the RT system supports.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.data_flow_type = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.data_flow_type = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.dataflowType', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._data_flow_type
 
@@ -198,6 +249,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         data_flow_type is set to PUSH. Dependent on what the RT Middleware used
         to execute the RT system supports.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.subscription_type = "PUSH"
+
+        Invalid assignment should throw exception:
+        >>> c.subscription_type = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.subscriptionType', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._subscription_type
 
@@ -214,6 +274,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
         As specified when the RT system is created.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.push_interval = 10.0
+
+        Invalid assignment should throw exception:
+        >>> c.push_interval = "test"
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.pushInterval', <type 'str'>, [<type 'int'>, <type 'float'>])
         '''
         return self._push_interval
 
@@ -225,7 +294,19 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     @property
     def source_data_port(self):
-        '''The source port in the connection.'''
+        '''The source port in the connection.
+
+        Example:
+        >>> import rtsprofile.targets
+        >>> c = DataPortConnector()
+        >>> c.source_data_port = rtsprofile.targets.TargetPort()
+
+        Invalid assignment should throw exception:
+        >>> c.source_data_port = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.sourceDataPort', <type 'int'>, <class 'rtsprofile.targets.TargetPort'>)
+        '''
         return self._source_data_port
 
     @source_data_port.setter
@@ -237,7 +318,19 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     @property
     def target_data_port(self):
-        '''The target port in the connection.'''
+        '''The target port in the connection.
+
+        Example:
+        >>> import rtsprofile.targets
+        >>> c = DataPortConnector()
+        >>> c.target_data_port = rtsprofile.targets.TargetPort()
+
+        Invalid assignment should throw exception:
+        >>> c.target_data_port = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.targetDataPort', <type 'int'>, <class 'rtsprofile.targets.TargetPort'>)
+        '''
         return self._target_data_port
 
     @target_data_port.setter
@@ -256,6 +349,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.comment = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -274,6 +376,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.visible = True
+
+        Invalid assignment should throw exception:
+        >>> c.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -291,6 +402,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
         Part of the extended profile.
 
+        Example:
+        >>> c = DataPortConnector()
+        >>> c.properties = {"key": "value"}
+
+        Invalid assignment should throw exception:
+        >>> c.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('dataport_connector.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -364,11 +484,12 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
         else:
             self.comment = ''
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y[RTS_EXT_NS_YAML + 'visible']
-            if visible == 'true' or visible == '1':
+            if visible == True or visible == 'true' or visible == '1':
                 self.visible = True
+            else:
+                self.visible = False
         if not 'sourceDataPort' in y:
             raise InvalidDataPortConnectorNodeError
         self.source_data_port = \
@@ -388,6 +509,7 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
 
     def save_xml(self, doc, element):
         '''Save this data port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:dataport_connector_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'connectorId',
                                self.connector_id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
@@ -399,13 +521,15 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
         if self.subscription_type:
             element.setAttributeNS(RTS_NS, RTS_NS_S + 'subscriptionType',
                                    self.subscription_type)
-        element.setAttributeNS(RTS_NS, RTS_NS_S + 'pushInterval',
-                               str(self.push_interval))
+        if self.push_interval != 0.0:
+            element.setAttributeNS(RTS_NS, RTS_NS_S + 'pushInterval',
+                                   str(self.push_interval))
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
                                    self.comment)
-        element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
-                               str(self.visible).lower())
+        if self.visible != True:
+            element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
+                                   str(self.visible).lower())
         new_element = doc.createElementNS(RTS_NS, RTS_NS_S + 'sourceDataPort')
         self.source_data_port.save_xml(doc, new_element)
         element.appendChild(new_element)
@@ -425,9 +549,10 @@ interval: {6}\n  Source data port:\n{7}\n  Target data port:\n{8}\n'.format(\
                 'dataType': self.data_type,
                 'interfaceType': self.interface_type,
                 'dataflowType': self.data_flow_type,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
                 'sourceDataPort': self.source_data_port.to_dict(),
                 'targetDataPort': self.target_data_port.to_dict()}
+        if self.visible != True:
+            d[RTS_EXT_NS_YAML + 'visible'] = self.visible
         if self.subscription_type:
             d['subscriptionType'] = self.subscription_type
         if self.push_interval:
@@ -515,7 +640,18 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     @property
     def connector_id(self):
-        '''The ID of the connector used to distinguish it in the RT system.'''
+        '''The ID of the connector used to distinguish it in the RT system.
+
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.connector_id = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.connector_id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.connectorID', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._connector_id
 
     @connector_id.setter
@@ -526,7 +662,18 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     @property
     def name(self):
-        '''The name of the connector.'''
+        '''The name of the connector.
+
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.name = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.name = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.name', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._name
 
     @name.setter
@@ -542,6 +689,15 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
         As specified when the RT system is created. Dependent on what the RT
         Middleware used to execute the RT system supports.
 
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.trans_method = "corba"
+
+        Invalid assignment should throw exception:
+        >>> c.trans_method = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.transMethod', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._trans_method
 
@@ -553,7 +709,19 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     @property
     def source_service_port(self):
-        '''The source port in the connection.'''
+        '''The source port in the connection.
+
+        Example:
+        >>> import rtsprofile.targets
+        >>> c = ServicePortConnector()
+        >>> c.source_service_port = rtsprofile.targets.TargetPort()
+
+        Invalid assignment should throw exception:
+        >>> c.source_service_port = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.sourceServicePort', <type 'int'>, <class 'rtsprofile.targets.TargetPort'>)
+        '''
         return self._source_service_port
 
     @source_service_port.setter
@@ -565,7 +733,19 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     @property
     def target_service_port(self):
-        '''The target port in the connection.'''
+        '''The target port in the connection.
+
+        Example:
+        >>> import rtsprofile.targets
+        >>> c = ServicePortConnector()
+        >>> c.target_service_port = rtsprofile.targets.TargetPort()
+
+        Invalid assignment should throw exception:
+        >>> c.target_service_port = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.targetServicePort', <type 'int'>, <class 'rtsprofile.targets.TargetPort'>)
+        '''
         return self._target_service_port
 
     @target_service_port.setter
@@ -584,6 +764,15 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
         Part of the extended profile.
 
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.comment = "test"
+
+        Invalid assignment should throw exception:
+        >>> c.comment = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.ext.comment', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._comment
 
@@ -602,6 +791,15 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
         Part of the extended profile.
 
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.visible = True
+
+        Invalid assignment should throw exception:
+        >>> c.visible = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.ext.visible', <type 'int'>, <type 'bool'>)
         '''
         return self._visible
 
@@ -619,6 +817,15 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
         Part of the extended profile.
 
+        Example:
+        >>> c = ServicePortConnector()
+        >>> c.properties = {"key": "value"}
+
+        Invalid assignment should throw exception:
+        >>> c.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('serviceport_connector.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -677,11 +884,12 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
             self.comment = y[RTS_EXT_NS_YAML + 'comment']
         else:
             self.comment = ''
-        self.visible = False
         if RTS_EXT_NS_YAML + 'visible' in y:
             visible = y[RTS_EXT_NS_YAML + 'visible']
-            if visible == 'true' or visible == '1':
+            if visible == True or visible == 'true' or visible == '1':
                 self.visible = True
+            else:
+                self.visible = False
         if 'sourceServicePort' not in y:
             raise InvalidServicePortConnectorNodeError
         self.source_service_port = \
@@ -701,6 +909,7 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
 
     def save_xml(self, doc, element):
         '''Save this service port into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:serviceport_connector_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'connectorId',
                                self.connector_id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'name', self.name)
@@ -710,8 +919,9 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
         if self.comment:
             element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'comment',
                                    self.comment)
-        element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
-                               str(self.visible).lower())
+        if self.visible != True:
+            element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'visible',
+                                   str(self.visible).lower())
         new_element = doc.createElementNS(RTS_NS,
                                           RTS_NS_S + 'sourceServicePort')
         self.source_service_port.save_xml(doc, new_element)
@@ -730,9 +940,10 @@ Source data port:\n{3}\n  Target data port:\n{4}'.format(self.connector_id,
         '''Save this service port connector into a dictionary.'''
         d = {'connectorId': self.connector_id,
                 'name': self.name,
-                RTS_EXT_NS_YAML + 'visible': str(self.visible).lower(),
                 'sourceServicePort': self.source_service_port.to_dict(),
                 'targetServicePort': self.target_service_port.to_dict()}
+        if self.visible != True:
+            d[RTS_EXT_NS_YAML + 'visible'] = self.visible
         if self.trans_method:
             d['transMethod'] = self.trans_method
         if self.comment:

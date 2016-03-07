@@ -24,7 +24,7 @@ __version__ = '$Revision: $'
 
 
 from rtsprofile import RTS_NS, RTS_NS_S, RTS_EXT_NS, RTS_EXT_NS_S, \
-                       RTS_EXT_NS_YAML
+                       RTS_EXT_NS_YAML, XSI_NS, XSI_NS_S
 from rtsprofile.participant import Participant
 from rtsprofile.utils import get_direct_child_elements_xml, \
                              indent_string, parse_properties_xml, \
@@ -76,7 +76,18 @@ class ExecutionContext(object):
 
     @property
     def id(self):
-        '''The ID used to identify this execution context.'''
+        '''The ID used to identify this execution context.
+
+        Example:
+        >>> ec = ExecutionContext()
+        >>> ec.id = "test"
+
+        Invalid assignment should throw exception:
+        >>> ec.id = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('execution_context.id', <type 'int'>, [<type 'str'>, <type 'unicode'>])
+        '''
         return self._id
 
     @id.setter
@@ -94,6 +105,15 @@ class ExecutionContext(object):
         RTSystemEditor and look at the XML. A common valid value is
         PeriodicExecutionContext.
 
+        Example:
+        >>> ec = ExecutionContext()
+        >>> ec.kind = "PeriodicExecutionContext"
+
+        Invalid assignment should throw exception:
+        >>> ec.kind = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('execution_context.kind', <type 'int'>, [<type 'str'>, <type 'unicode'>])
         '''
         return self._kind
 
@@ -110,6 +130,15 @@ class ExecutionContext(object):
         An ordered list. May be an empty list if no components are
         participating in this context.
 
+        Example:
+        >>> ec = ExecutionContext()
+        >>> ec.participants = []
+
+        Invalid assignment should throw exception:
+        >>> ec.participants = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('execution_context.participants', <type 'int'>, <type 'list'>)
         '''
         return self._participants
 
@@ -126,6 +155,15 @@ class ExecutionContext(object):
         This value is only used if the execution context is periodic for a data
         flow component.
 
+        Example:
+        >>> ec = ExecutionContext()
+        >>> ec.rate = 1000.0
+
+        Invalid assignment should throw exception:
+        >>> ec.rate = "test"
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('execution_context.rate', <type 'str'>, [<type 'int'>, <type 'float'>])
         '''
         return self._rate
 
@@ -143,6 +181,15 @@ class ExecutionContext(object):
 
         Part of the extended profile.
 
+        Example:
+        >>> ec = ExecutionContext()
+        >>> ec.properties = {"key": "value"}
+
+        Invalid assignment should throw exception:
+        >>> ec.properties = 1
+        Traceback (most recent call last):
+        ...
+        InvalidTypeError: ('execution_context.ext.Properties', <type 'int'>, <type 'dict'>)
         '''
         return self._properties
 
@@ -198,6 +245,7 @@ class ExecutionContext(object):
 
     def save_xml(self, doc, element):
         '''Save this execution context into an xml.dom.Element object.'''
+        element.setAttributeNS(XSI_NS, XSI_NS_S + 'type', 'rtsExt:execution_context_ext')
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'id', self.id)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'kind', self.kind)
         element.setAttributeNS(RTS_NS, RTS_NS_S + 'rate', str(self.rate))

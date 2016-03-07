@@ -166,7 +166,7 @@ class Location(object):
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'width',
                                str(self.width))
         element.setAttributeNS(RTS_EXT_NS, RTS_EXT_NS_S + 'direction',
-                               dir.to_string(self.direction))
+                               dir.to_string(self.direction).lower())
 
     def to_dict(self):
         '''Save this location into a dictionary.'''
